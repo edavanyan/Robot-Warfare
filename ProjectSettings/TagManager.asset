@@ -47,3 +47,6 @@ TagManager:
   - name: World
     uniqueID: 3653530627
     locked: 0
+  - name: Decor
+    uniqueID: 2645738061
+    locked: 0
