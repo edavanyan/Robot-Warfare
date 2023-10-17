@@ -1,5 +1,7 @@
 using System;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Cameras
 {
@@ -13,22 +15,39 @@ namespace Cameras
         [SerializeField] private Transform target;
         private PlayerController.CharacterController character;
         [SerializeField] private float cameraAcceleration = 2f;
+        [SerializeField] private Tilemap map;
         private Vector2 moveDirection = Vector2.zero;
+        private Vector2 mapBoundsMax = new Vector2(28.5f, 16f);
+        private Vector2 mapBoundsMin = new Vector2(28.5f, 16f);
 
         private void Start()
         {
+            var cellBounds = map.cellBounds;
+            var boundsMax = map.CellToWorld(cellBounds.max);
+            var boundsMin = map.CellToWorld(cellBounds.min);
+
+            // ReSharper disable once LocalVariableHidesMember
+            var camera = GetComponent<Camera>();
+            var vertical = camera.orthographicSize;
+            var horizontal = vertical * camera.aspect;
+            
+            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical - 0.5f);
+            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical + 0.5f);
+            
             character = target.gameObject.GetComponent<PlayerController.CharacterController>();
         }
 
         private void Move(Vector2 position)
         {
             destination = position + moveDirection * offset;
-            var smoothPosition = Vector3.Lerp(transform.position, destination, smoothSpeed * Time.fixedDeltaTime);
+            var smoothPosition = Vector3.Lerp(transform.position, destination, smoothSpeed * Time.deltaTime);
+            smoothPosition.x = Mathf.Clamp(smoothPosition.x, mapBoundsMin.x, mapBoundsMax.x);
+            smoothPosition.y = Mathf.Clamp(smoothPosition.y, mapBoundsMin.y, mapBoundsMax.y);
             smoothPosition.z = -10f;
             transform.position = smoothPosition;
         }
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
             var direction = character.GetCurrentSpeed().normalized;
             Move(target.position);
