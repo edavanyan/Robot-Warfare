@@ -30,9 +30,10 @@ namespace Cameras
             var camera = GetComponent<Camera>();
             var vertical = camera.orthographicSize;
             var horizontal = vertical * camera.aspect;
-            
-            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical - 0.5f);
-            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical + 0.5f);
+
+            var mapCellSize = map.cellSize;
+            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical - mapCellSize.y);
+            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical + mapCellSize.y);
             
             character = target.gameObject.GetComponent<PlayerController.CharacterController>();
         }
