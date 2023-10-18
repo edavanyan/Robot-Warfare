@@ -32,8 +32,8 @@ namespace Cameras
             var horizontal = vertical * camera.aspect;
 
             var mapCellSize = map.cellSize;
-            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical - mapCellSize.y);
-            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical + mapCellSize.y);
+            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
+            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);
             
             character = target.gameObject.GetComponent<PlayerController.CharacterController>();
         }
