@@ -6,13 +6,13 @@ namespace PlayerController
 {
     public abstract class PlayerState : State<CharacterController>
     {
-        protected Rigidbody2D rigidbody;
+        protected Rigidbody2D rigidBody;
         protected CharacterAnimation animation;
         
         public override void Init(CharacterController parent)
         {
             base.Init(parent); 
-            rigidbody = parent.GetComponent<Rigidbody2D>();
+            rigidBody = parent.rigidBody;
             animation = parent.CharacterAnimation;
             
             PlayStateAnimation();

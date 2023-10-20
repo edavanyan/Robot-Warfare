@@ -50,12 +50,12 @@ namespace PlayerController
 
         public override void FixedUpdate()
         {
-            var position = rigidbody.position;
+            var position = rigidBody.position;
             var destination = position + currentSpeed * Time.fixedDeltaTime * moveDirection;
 
             // var collision = Physics2D.OverlapCircle(position + runner.CircleCollider2D.offset, runner.CircleCollider2D.radius, runner.ObstaclesLayer);
             // Debug.Log(collision);
-            rigidbody.MovePosition(destination);
+            rigidBody.MovePosition(destination);
             animation.AdjustSpriteRotation(moveDirection.x);
         }
 

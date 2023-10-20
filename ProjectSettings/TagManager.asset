@@ -14,9 +14,9 @@ TagManager:
   - Obstacles
   - Ground
   - Character
-  - 
-  - 
-  - 
+  - Enemy
+  - EnemyIgnore
+  - Player
   - 
   - 
   - 
@@ -49,4 +49,7 @@ TagManager:
     locked: 0
   - name: Decor
     uniqueID: 2645738061
+    locked: 0
+  - name: Payer
+    uniqueID: 98891549
     locked: 0

@@ -12,21 +12,20 @@ namespace StateMachine
         [SerializeField]
         private List<PlayerState> states;
         protected PlayerState activeState;
+        private PlayerController.CharacterController character; 
 
         protected virtual void Awake()
         {
+            character = GetComponent<PlayerController.CharacterController>();
             SetState(states[0].GetType());
         }
 
         public void SetState(Type newStateType)
         {
-            if (activeState != null)
-            {
-                activeState.Exit();
-            }
+            activeState?.Exit();
 
             activeState = states.First(s => s.GetType() == newStateType);
-            activeState.Init(GetComponent<PlayerController.CharacterController>());
+            activeState.Init(character);
         }
 
         private void Update()

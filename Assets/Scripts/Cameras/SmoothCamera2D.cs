@@ -27,11 +27,10 @@ namespace Cameras
             var boundsMin = map.CellToWorld(cellBounds.min);
 
             // ReSharper disable once LocalVariableHidesMember
-            var camera = GetComponent<Camera>();
+            var camera = mainCamera;
             var vertical = camera.orthographicSize;
             var horizontal = vertical * camera.aspect;
 
-            var mapCellSize = map.cellSize;
             mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
             mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);
             
