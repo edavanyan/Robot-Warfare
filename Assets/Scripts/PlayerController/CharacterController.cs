@@ -41,7 +41,7 @@ namespace PlayerController
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.magenta;
-            // Gizmos.DrawWireSphere(GetComponent<Rigidbody2D>().position + CircleCollider2D.offset, CircleCollider2D.radius);
+            Gizmos.DrawWireSphere(transform.position, 2);
         }
     }
 }

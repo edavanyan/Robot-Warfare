@@ -15,7 +15,7 @@ TagManager:
   - Ground
   - Character
   - Enemy
-  - EnemyIgnore
+  - EnemySeparation
   - Player
   - 
   - 
