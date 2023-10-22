@@ -7,13 +7,13 @@ namespace EnemyAI
     public class EnemySpawner : MonoBehaviour
     {
         public Camera camera;
-        public GameObject enemyInstance;
+        public Enemy enemyInstance;
         public int limit;
         public Map map;
 
         void Start()
         {
-            InvokeRepeating(nameof(Spawn), 1f, 0.1f);
+            InvokeRepeating(nameof(Spawn), 1f, 1.5f);
         }
 
         private int count = 0;
@@ -28,7 +28,8 @@ namespace EnemyAI
             var cell = map.freeTiles[index];
             var enemyPosition = cell.Value;
 
-            Instantiate(enemyInstance, enemyPosition, Quaternion.identity);
+            var enemy = Instantiate(enemyInstance, enemyPosition, Quaternion.identity);
+            enemy.OnDie += () => Destroy(enemy.gameObject);
         }
     }
 }

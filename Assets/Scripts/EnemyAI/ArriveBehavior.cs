@@ -5,7 +5,6 @@ namespace EnemyAI
 {
     public class ArriveBehavior : Steering
     {
-        private float targetRadius = 0.5f;
         private float slowRadius = 5f;
 
         private float inverseRadius;
@@ -17,18 +16,18 @@ namespace EnemyAI
 
         private Color color;
         private Transform target;
-        public override SteeringData GetSteering(SteeringBase steeringBase)
+        public override SteeringData GetSteering(Enemy enemy)
         {
-            target = steeringBase.target;
+            target = enemy.target;
             var steering = new SteeringData();
-            var direction = (Vector2)(steeringBase.target.position - steeringBase.transform.position);
+            var direction = (Vector2)(enemy.target.position - enemy.transform.position);
             var distance = direction.magnitude;
             color = Color.green;
-            if (distance < targetRadius)
+            if (distance < enemy.targetRadius)
             {
                 
                 color = Color.red;
-                steeringBase.rigidBody.velocity = Vector2.zero;
+                enemy.rigidBody.velocity = Vector2.zero;
                 return steering;
             }
 
@@ -36,7 +35,7 @@ namespace EnemyAI
             if (distance > slowRadius)
             {
                 
-                targetSpeed = steeringBase.maxAcceleration;
+                targetSpeed = enemy.maxAcceleration;
             }
             else
             {
@@ -48,12 +47,12 @@ namespace EnemyAI
             targetVelocity.Normalize();
             targetVelocity *= targetSpeed;
 
-            steering.linear = targetVelocity - steeringBase.rigidBody.velocity;
-            if (steering.linear.magnitude > steeringBase.maxAcceleration)
+            steering.linear = targetVelocity - enemy.rigidBody.velocity;
+            if (steering.linear.magnitude > enemy.maxAcceleration)
             {
                 color = Color.cyan;
                 steering.linear.Normalize();
-                steering.linear *= steeringBase.maxAcceleration;
+                steering.linear *= enemy.maxAcceleration;
             }
 
             return steering;

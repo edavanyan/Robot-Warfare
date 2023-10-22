@@ -13,10 +13,10 @@ namespace EnemyAI
 
         public ObstacleAvoidanceBehavior(int weight) : base(weight) { }
 
-        public override SteeringData GetSteering(SteeringBase steeringBase)
+        public override SteeringData GetSteering(Enemy enemy)
         {
             var steering = new SteeringData();
-            var velocity = steeringBase.rigidBody.velocity;
+            var velocity = enemy.rigidBody.velocity;
             rayVector[0] = velocity;
             rayVector[0].Normalize();
             rayVector[0] *= lookahead;
@@ -58,17 +58,17 @@ namespace EnemyAI
             // rayVector[9].Normalize();
             // rayVector[9] *= lookahead;
 
-            var position = (Vector2)steeringBase.transform.position;
+            var position = (Vector2)enemy.transform.position;
             foreach (var ray in rayVector)
             {
                 var hit = Physics2D.Linecast(position,  position + ray, CollisionLayer);
                 if (hit)
                 {
-                    Debug.DrawRay(steeringBase.transform.position, ray);
+                    Debug.DrawRay(enemy.transform.position, ray);
                     var target = hit.point + (hit.normal * avoidDistance);
                     steering.linear = target - position;
                     steering.linear.Normalize();
-                    steering.linear *= steeringBase.maxAcceleration;
+                    steering.linear *= enemy.maxAcceleration;
                     break;
                 }
             }

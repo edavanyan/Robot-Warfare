@@ -6,14 +6,14 @@ namespace EnemyAI
     {
         public SeekBehavior(int weight) : base(weight) { }
         
-        public override SteeringData GetSteering(SteeringBase steeringBase)
+        public override SteeringData GetSteering(Enemy enemy)
         {
             var steering = new SteeringData
             {
-                linear = steeringBase.target.transform.position - steeringBase.transform.position
+                linear = enemy.target.transform.position - enemy.transform.position
             };
             steering.linear.Normalize();
-            steering.linear *= steeringBase.maxAcceleration;
+            steering.linear *= enemy.maxAcceleration;
             return steering;
         }
     }

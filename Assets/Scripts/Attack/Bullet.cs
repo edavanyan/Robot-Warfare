@@ -8,7 +8,6 @@ namespace Attack
         private Vector2 direction;
         [SerializeField]
         private Rigidbody2D rigidbody;
-
         private TrailRenderer trail;
 
         private void Awake()
@@ -16,9 +15,10 @@ namespace Attack
             trail = GetComponentInChildren<TrailRenderer>();
         }
 
-        public override void Init(Transform target)
+        // ReSharper disable once ParameterHidesMember
+        public override void Init(Transform target, Action<Transform> hitCallback)
         {
-            base.Init(target);
+            base.Init(target, hitCallback);
             direction = target.position - transform.position;
             direction.Normalize();
             
@@ -32,8 +32,13 @@ namespace Attack
 
         public override void Free()
         {
+            base.Free();
             rigidbody.velocity = Vector2.zero;
-            trail.Clear();
+            if (trail)
+            {
+                trail.Clear();
+            }
+
             gameObject.SetActive(false);
         }
     }

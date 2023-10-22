@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cameras;
 using PlayerController;
 using UnityEngine;
+using Utils.Pool;
 
 namespace Attack
 {
@@ -19,7 +20,9 @@ namespace Attack
         private bool canAttack = true;
         private Transform target;
         public event Action OnAttack;
-        private List<Projectile> activeProjectiles = new List<Projectile>();
+        private readonly List<Projectile> activeProjectiles = new();
+
+        [SerializeField] private AttackType type;
 
         private void Start()
         {
@@ -48,25 +51,33 @@ namespace Attack
         {
             var projToFire = projectilePool.NewItem();
             projToFire.transform.position = transform.position;
-            projToFire.Init(target);
+            projToFire.Init(target, hit =>
+            {
+                hit.SendMessage(nameof(IHittable.Hit), damage);
+                tempForRemoveProj.Add(projToFire);
+                
+            });
             activeProjectiles.Add(projToFire);
             OnAttack?.Invoke();
         }
 
-        private List<Projectile> tempForRemoveProj = new List<Projectile>();
+        private readonly List<Projectile> tempForRemoveProj = new();
         private void FixedUpdate()
         {
-            foreach (var proj in activeProjectiles)
+            if (type == AttackType.Ranged)
             {
-                var boundsMax = camera2D.CameraBoundsMax;
-                var boundsMin = camera2D.CameraBoundsMin;
-                var projPosition = proj.transform.position;
-                if (projPosition.x > boundsMax.x ||
-                    projPosition.y > boundsMax.y ||
-                    projPosition.x < boundsMin.x ||
-                    projPosition.y < boundsMin.y)
+                foreach (var proj in activeProjectiles)
                 {
-                    tempForRemoveProj.Add(proj);
+                    var boundsMax = camera2D.CameraBoundsMax;
+                    var boundsMin = camera2D.CameraBoundsMin;
+                    var projPosition = proj.transform.position;
+                    if (projPosition.x > boundsMax.x ||
+                        projPosition.y > boundsMax.y ||
+                        projPosition.x < boundsMin.x ||
+                        projPosition.y < boundsMin.y)
+                    {
+                        tempForRemoveProj.Add(proj);
+                    }
                 }
             }
 
@@ -77,5 +88,10 @@ namespace Attack
             }
             tempForRemoveProj.Clear();
         }
+    }
+
+    public enum AttackType
+    {
+        Melee, Ranged
     }
 }

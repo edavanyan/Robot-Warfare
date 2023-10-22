@@ -13,18 +13,18 @@ namespace EnemyAI
         {
         }
         
-        public override SteeringData GetSteering(SteeringBase steeringBase)
+        public override SteeringData GetSteering(Enemy enemy)
         {
             SteeringData steering = new SteeringData();
-            var targetCount = Physics2D.OverlapCircleNonAlloc((Vector2)steeringBase.transform.position, 0.5f, targets, CollisionLayer);
+            var targetCount = Physics2D.OverlapCircleNonAlloc((Vector2)enemy.transform.position, 0.5f, targets, CollisionLayer);
             for (var i = 0; i < targetCount; i++)
             {
                 var target = targets[i].transform;
-                Vector2 direction = (Vector2)target.transform.position - (Vector2)steeringBase.transform.position;
+                Vector2 direction = (Vector2)target.transform.position - (Vector2)enemy.transform.position;
                 float distance = direction.magnitude;
                 if (distance < threshold)
                 {
-                    float strength = -steeringBase.maxAcceleration;
+                    float strength = -enemy.maxAcceleration;
                     direction.Normalize();
                     steering.linear += strength * direction;
                 }

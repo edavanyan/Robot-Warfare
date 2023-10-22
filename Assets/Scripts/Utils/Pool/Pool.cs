@@ -1,39 +1,40 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEngine;
 
-public abstract class Pool<T> where T : IPoolable
+namespace Utils.Pool
 {
-    private readonly List<T> _freeItemList = new List<T>();
-    private readonly T _prototype;
-
-    public Pool(T prototype)
+    public abstract class Pool<T> where T : IPoolable
     {
-        _prototype = prototype;
-    }
+        private readonly List<T> _freeItemList = new List<T>();
+        private readonly T _prototype;
 
-    public T NewItem()
-    {
-        if (_freeItemList.Count > 0)
+        public Pool(T prototype)
         {
-            var item = _freeItemList[0];
-            _freeItemList.RemoveAt(0);
-
-            item.New();
-            return item;
+            _prototype = prototype;
         }
 
-        var newItem = CreateItem(_prototype);
-        newItem.New();
-        return newItem;
-    }
+        public T NewItem()
+        {
+            if (_freeItemList.Count > 0)
+            {
+                var item = _freeItemList[0];
+                _freeItemList.RemoveAt(0);
 
-    protected abstract T CreateItem(T prototype);
+                item.New();
+                return item;
+            }
 
-    public void DestroyItem(T item)
-    {
-        _freeItemList.Add(item);
-        item.Free();
+            var newItem = CreateItem(_prototype);
+            newItem.New();
+            return newItem;
+        }
+
+        protected abstract T CreateItem(T prototype);
+
+        public void DestroyItem(T item)
+        {
+            _freeItemList.Add(item);
+            item.Free();
+        }
     }
 }

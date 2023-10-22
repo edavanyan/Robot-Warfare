@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1236794765778362682}
   m_Layer: 9
   m_Name: Gfx
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,8 +154,8 @@ GameObject:
   - component: {fileID: 7295235019447297154}
   - component: {fileID: 2419173050715140308}
   m_Layer: 9
-  m_Name: Enemy
-  m_TagString: Untagged
+  m_Name: EnemySpider
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -174,6 +174,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4035830492204099063}
+  - {fileID: 1810731566977459757}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &7295235019447297154
@@ -199,7 +200,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -215,8 +216,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c482b2e886464d2da1e06243c3fda01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigidBody: {fileID: 0}
-  target: {fileID: 0}
   maxAcceleration: 3
   maxSpeed: 1
   drag: 1
+  maxHealth: 30
+  animator: {fileID: 3104858182561323225}
+  targetRadius: 0.25
+--- !u!1 &4650222428755315542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1810731566977459757}
+  - component: {fileID: 4507342416901237232}
+  m_Layer: 9
+  m_Name: Attacker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1810731566977459757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650222428755315542}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2501065205938877970}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4507342416901237232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4650222428755315542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e7c942f26b14be98c8794b99fce75e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera2D: {fileID: 0}
+  projectile: {fileID: 7936001040826742282, guid: 076b4eeab1e114fa69df762efd08d867, type: 3}
+  damage: 10
+  attackSpeed: 1
+  attackRange: 0.25
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  type: 0

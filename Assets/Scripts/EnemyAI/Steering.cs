@@ -11,7 +11,7 @@ namespace EnemyAI
             this.weight = weight;
         }
         
-        public abstract SteeringData GetSteering(SteeringBase steeringBase);
+        public abstract SteeringData GetSteering(Enemy enemy);
 
         public float GetWeight()
         {
