@@ -17,6 +17,9 @@ namespace Cameras
         private Vector2 moveDirection = Vector2.zero;
         private Vector2 mapBoundsMax = new Vector2(28.5f, 16f);
         private Vector2 mapBoundsMin = new Vector2(28.5f, 16f);
+        public Vector2 CameraBoundsMax => cameraBounds + (Vector2)transform.position;
+        public Vector2 CameraBoundsMin => (Vector2)transform.position - cameraBounds;
+        private Vector2 cameraBounds;
 
         private void Start()
         {
@@ -28,6 +31,7 @@ namespace Cameras
             var camera = mainCamera;
             var vertical = camera.orthographicSize;
             var horizontal = vertical * camera.aspect;
+            cameraBounds = new Vector2(horizontal, vertical);
 
             mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
             mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);

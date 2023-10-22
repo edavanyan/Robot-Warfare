@@ -24,7 +24,7 @@ namespace PlayerController
             currentSpeed = 0;
         }
 
-        protected override void PlayStateAnimation()
+        public override void PlayStateAnimation()
         {
             animation.WalkingAnimation();
         }

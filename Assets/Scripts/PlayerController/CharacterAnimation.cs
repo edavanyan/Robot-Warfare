@@ -8,6 +8,10 @@ namespace PlayerController
         private readonly Transform transform;
         private static readonly int IsWalking = Animator.StringToHash("IsWalking");
         private static readonly int IsIdle = Animator.StringToHash("IsIdle");
+        private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
+
+        private int currentTrigger;
+        
 
         public CharacterAnimation(Animator animator, Transform transform)
         {
@@ -25,12 +29,20 @@ namespace PlayerController
         {
             // animator.ResetTrigger(IsIdle);
             animator.SetTrigger(IsWalking);
+            currentTrigger = IsWalking;
         }
 
         public void IdleAnimation()
         {
             // animator.ResetTrigger(IsWalking);
             animator.SetTrigger(IsIdle);
+            currentTrigger = IsIdle;
+        }
+
+        public void AttackAnimation()
+        {
+            animator.SetTrigger(IsAttacking);
+            
         }
     }
 }

@@ -27,7 +27,7 @@ namespace PlayerController
             runner.Input = context.ReadValue<Vector2>();
         }
 
-        protected abstract void PlayStateAnimation();
+        public abstract void PlayStateAnimation();
 
         public override void Exit()
         {

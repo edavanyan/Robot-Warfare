@@ -8,7 +8,7 @@ namespace PlayerController
     public class IdleState : PlayerState
     {
 
-        protected override void PlayStateAnimation()
+        public override void PlayStateAnimation()
         {
             animation.IdleAnimation();
         }

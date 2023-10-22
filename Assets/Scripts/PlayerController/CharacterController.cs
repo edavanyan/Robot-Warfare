@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Attack;
 using StateMachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace PlayerController
         public Rigidbody2D rigidBody;
         public Dictionary<string, Sprite> shadowSprites;
         [SerializeField] private Sprite[] shadows;
+        [SerializeField] private Attacker attackerAgent;
 
         protected override void Awake()
         {
@@ -27,7 +29,6 @@ namespace PlayerController
                 var name = shadow.name;
                 var shadowSize = "shadow_".Length + 1;
                 var key = string.Concat(name.Substring(0, name.Length - shadowSize), shadow.name.Substring(name.Length - 1, 1));
-                print(key);
                 shadowSprites.Add(key, shadow);
             }
             base.Awake();

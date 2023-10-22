@@ -1,8 +1,9 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Attack
 {
-    public abstract class Projectile : MonoBehaviour
+    public abstract class Projectile : MonoBehaviour, IPoolable
     {
         protected Transform target;
         public float speed;
@@ -11,5 +12,9 @@ namespace Attack
         {
             this.target = target;
         }
+
+        public abstract void New();
+
+        public abstract void Free();
     }
 }
