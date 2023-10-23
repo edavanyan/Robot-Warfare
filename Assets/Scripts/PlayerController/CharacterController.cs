@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using Attack;
 using StateMachine;
-using Unity.VisualScripting;
+using UI;
 using UnityEngine;
 
 namespace PlayerController
 {
     public class CharacterController : StateRunner<CharacterController>, IHittable
     {
+        [SerializeField] private HpBar hpBar;
         public LayerMask ObstaclesLayer;
         public CharacterAnimation CharacterAnimation;
         public Vector2 Input = Vector2.zero;
@@ -26,6 +27,7 @@ namespace PlayerController
         {
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () => Debug.Log("Player Die");
+            hpBar.MaxValue = hpBar.Value = maxHealth;
             rigidBody = GetComponent<Rigidbody2D>();
             CharacterAnimation = new CharacterAnimation(animator, transform);
             shadowSprites = new Dictionary<string, Sprite>();
@@ -53,6 +55,12 @@ namespace PlayerController
         public void Hit(int damageAmount)
         {
             hitPoints.Hit(damageAmount);
+            hpBar.Change(damageAmount);
+        }
+
+        private void LateUpdate()
+        {
+            hpBar.transform.position = transform.position;
         }
     }
 }
