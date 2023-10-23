@@ -53,9 +53,11 @@ namespace Attack
             projToFire.transform.position = transform.position;
             projToFire.Init(target, hit =>
             {
-                hit.SendMessage(nameof(IHittable.Hit), damage);
-                tempForRemoveProj.Add(projToFire);
-                
+                if (hit.gameObject.activeSelf)
+                {
+                    hit.SendMessage(nameof(IHittable.Hit), damage);
+                    tempForRemoveProj.Add(projToFire);
+                }
             });
             activeProjectiles.Add(projToFire);
             OnAttack?.Invoke();

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Utils;
 
 namespace Grid
 {
@@ -33,6 +34,22 @@ namespace Grid
                     }
                 }
             }
+        }
+
+        public Vector2 GetFreeTileAt(float x, float y)
+        {
+            var cell = grid.WorldToCell(new Vector3(x, y));
+            while (obstacles.GetTile(cell) != null)
+            {
+                cell = new Vector3Int(cell.x + 1, cell.y);
+            }
+
+            if (ground.cellBounds.Contains(cell))
+            {
+                return grid.CellToWorld(cell) + grid.cellSize / 2f;
+            }
+
+            return Constants.Nan;
         }
     }
 }

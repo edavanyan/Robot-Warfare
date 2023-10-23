@@ -1,13 +1,13 @@
 using System;
 using Attack;
 using PlayerController;
-using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace EnemyAI
 {
-    public class Enemy : MonoBehaviour, IHittable
+    public class Enemy : MonoBehaviour, IHittable, IPoolable
     {
         internal Rigidbody2D rigidBody;
         internal Transform target;
@@ -22,16 +22,15 @@ namespace EnemyAI
         [SerializeField] internal float targetRadius;
         private Attacker attacker;
 
-        private EnemyAnimation animation;
+        private EnemyAnimation animationController;
 
         private HitPoints hitPoints;
         public event Action OnDie;
 
-        private void Start()
+        private void Awake()
         {
-            animation = new EnemyAnimation(animator, transform);
+            animationController = new EnemyAnimation(animator, transform);
             hitPoints = new HitPoints(maxHealth);
-            hitPoints.OnDie += OnDie;
             
             rigidBody = GetComponent<Rigidbody2D>();
             
@@ -41,19 +40,19 @@ namespace EnemyAI
             InvokeRepeating(nameof(AdjustRotation), Random.Range(0f, 0.2f), Random.Range(0.1f, 0.3f));
             
             attacker = GetComponentInChildren<Attacker>();
-            attacker.OnAttack += animation.AttackAnimation;
+            attacker.OnAttack += animationController.AttackAnimation;
         }
 
         public void Hit(int amount)
         {
             hitPoints.Hit(amount);
-            animation.HitAnimation();
+            animationController.HitAnimation();
             rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * 1.5f, ForceMode2D.Impulse);
         }
 
         private void AdjustRotation()
         {
-            animation.AdjustSpriteRotation(target.position.x - transform.position.x);
+            animationController.AdjustSpriteRotation(target.position.x - transform.position.x);
         }
 
         private void InitializeSteeringList()
@@ -78,12 +77,24 @@ namespace EnemyAI
             rigidBody.AddForce(acceleration);
             if (rigidBody.velocity != Vector2.zero)
             {
-                animation.WalkingAnimation();
+                animationController.WalkingAnimation();
             }
             else
             {
-                animation.IdleAnimation();
+                animationController.IdleAnimation();
             }
+        }
+
+        public void New()
+        {
+            gameObject.SetActive(true);
+            hitPoints.OnDie += () => OnDie?.Invoke();
+        }
+
+        public void Free()
+        {
+            hitPoints.Reset();
+            gameObject.SetActive(false);
         }
     }
 }

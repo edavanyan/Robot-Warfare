@@ -5,14 +5,14 @@ namespace Utils.Pool
 {
     public class ComponentPool<T> : Pool<T> where T : MonoBehaviour, IPoolable
     {
-        private Transform _defaultParent;
+        private readonly Transform defaultParent;
         public ComponentPool(T prototype) : base(prototype)
         {
         }
 
         public ComponentPool(T prototype, Transform transform, bool forceInstantiate = true) : base(prototype)
         {
-            _defaultParent = transform;
+            defaultParent = transform;
             if (forceInstantiate)
             {
                 var proto = CreateItem(prototype);
@@ -20,9 +20,9 @@ namespace Utils.Pool
             }
         }
 
-        protected override T CreateItem(T prototype)
+        protected sealed override T CreateItem(T prototype)
         {
-            return GameObject.Instantiate(prototype, _defaultParent);
+            return GameObject.Instantiate(prototype, defaultParent);
         }
 
     }

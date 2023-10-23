@@ -5,26 +5,26 @@ namespace Utils.Pool
 {
     public abstract class Pool<T> where T : IPoolable
     {
-        private readonly List<T> _freeItemList = new List<T>();
-        private readonly T _prototype;
+        private readonly List<T> freeItemList = new ();
+        private readonly T prototype;
 
-        public Pool(T prototype)
+        protected Pool(T prototype)
         {
-            _prototype = prototype;
+            this.prototype = prototype;
         }
 
         public T NewItem()
         {
-            if (_freeItemList.Count > 0)
+            if (freeItemList.Count > 0)
             {
-                var item = _freeItemList[0];
-                _freeItemList.RemoveAt(0);
+                var item = freeItemList[0];
+                freeItemList.RemoveAt(0);
 
                 item.New();
                 return item;
             }
 
-            var newItem = CreateItem(_prototype);
+            var newItem = CreateItem(prototype);
             newItem.New();
             return newItem;
         }
@@ -33,7 +33,11 @@ namespace Utils.Pool
 
         public void DestroyItem(T item)
         {
-            _freeItemList.Add(item);
+            if (freeItemList.Contains(item))
+            {
+                return;
+            }
+            freeItemList.Add(item);
             item.Free();
         }
     }
