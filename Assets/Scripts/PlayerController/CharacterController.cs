@@ -20,6 +20,7 @@ namespace PlayerController
         [SerializeField] private Sprite[] shadows;
         [SerializeField] private Attacker attackerAgent;
         [SerializeField] private int maxHealth;
+        [SerializeField] private Vector3 barOffset = new Vector3(0, -0.1f, 0);
 
         private HitPoints hitPoints;
 
@@ -60,7 +61,7 @@ namespace PlayerController
 
         private void LateUpdate()
         {
-            hpBar.transform.position = transform.position;
+            hpBar.transform.position = transform.position + barOffset;
         }
     }
 }

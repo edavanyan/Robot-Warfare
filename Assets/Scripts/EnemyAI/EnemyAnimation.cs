@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace EnemyAI
@@ -10,6 +11,7 @@ namespace EnemyAI
         private static readonly int IsIdle = Animator.StringToHash("Idle");
         private static readonly int IsAttacking = Animator.StringToHash("Attack");
         private static readonly int IsHit = Animator.StringToHash("Hit");
+        private static readonly int IsDie = Animator.StringToHash("Die");
 
         private int currentTrigger;
         
@@ -24,7 +26,7 @@ namespace EnemyAI
         {
             if (x != 0)
             {
-                transform.localScale = new Vector3(Mathf.Sign(x), 1, 1);
+                transform.DOScaleX(Mathf.Sign(x), 0.05f);
             }
         }
         
@@ -49,6 +51,11 @@ namespace EnemyAI
         public void HitAnimation()
         {
             animator.SetTrigger(IsHit);
+        }
+
+        public void DieAnimation()
+        {
+            animator.SetTrigger(IsDie);
         }
     }
 }

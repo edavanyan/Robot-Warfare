@@ -7,7 +7,7 @@ namespace Attack
     {
         private Vector2 direction;
         [SerializeField]
-        private Rigidbody2D rigidbody;
+        private new Rigidbody2D rigidbody;
         private TrailRenderer trail;
 
         private void Awake()

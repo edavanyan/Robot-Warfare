@@ -25,9 +25,15 @@ namespace EnemyAI
             color = Color.green;
             if (distance < enemy.targetRadius)
             {
-                
+                var velocity = enemy.rigidBody.velocity;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (Mathf.Sign(direction.x) == Mathf.Sign(velocity.x) &&
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    Mathf.Sign(direction.y) == Mathf.Sign(velocity.y))
+                {
+                    enemy.rigidBody.velocity = Vector2.zero;
+                }
                 color = Color.red;
-                enemy.rigidBody.velocity = Vector2.zero;
                 return steering;
             }
 

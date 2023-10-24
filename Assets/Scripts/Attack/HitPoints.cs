@@ -23,7 +23,7 @@ namespace Attack
             CurrentHitPoints = (int)Mathf.Ceil(MaxHitPoints * ratio);
         }
 
-        public void Hit(int damage)
+        public bool Hit(int damage)
         {
             CurrentHitPoints -= damage;
             OnDamaged?.Invoke(damage);
@@ -32,7 +32,10 @@ namespace Attack
                 CurrentHitPoints = 0;
                 OnDie?.Invoke();
                 OnDie = null;
+                return true;
             }
+
+            return false;
         }
 
         public void Reset()

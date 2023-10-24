@@ -17,8 +17,7 @@ namespace Attack
         public float attackSpeed;
         public float attackRange;
         public LayerMask targetLayer;
-        private bool canAttack = true;
-        private Transform target;
+        protected bool canAttack = true;
         public event Action OnAttack;
         private readonly List<Projectile> activeProjectiles = new();
 
@@ -31,7 +30,7 @@ namespace Attack
             StartCoroutine(nameof(FindTargetAndAttack));
         }
 
-        private IEnumerator FindTargetAndAttack()
+        protected virtual IEnumerator FindTargetAndAttack()
         {
             while (canAttack)
             {
@@ -47,7 +46,7 @@ namespace Attack
         }
 
         // ReSharper disable once ParameterHidesMember
-        private void Attack(Transform target)
+        protected void Attack(Transform target)
         {
             var projToFire = projectilePool.NewItem();
             projToFire.transform.position = transform.position;
@@ -55,6 +54,7 @@ namespace Attack
             {
                 if (hit.gameObject.activeSelf)
                 {
+                    projectilePool.DestroyItem(projToFire);
                     hit.SendMessage(nameof(IHittable.Hit), damage);
                     tempForRemoveProj.Add(projToFire);
                 }

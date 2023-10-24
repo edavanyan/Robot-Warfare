@@ -14,6 +14,14 @@ namespace Grid
         public List<GridCell<Vector2>> freeTiles = new ();
         public List<GridCell<Vector2>> blockedTiles = new ();
 
+        private Vector3Int[] directions =
+        {
+            Vector3Int.right, 
+            Vector3Int.down,
+            Vector3Int.left,
+            Vector3Int.up
+        };
+
         private void Awake()
         {
             var cellBounds = ground.cellBounds;
@@ -41,7 +49,7 @@ namespace Grid
             var cell = grid.WorldToCell(new Vector3(x, y));
             while (obstacles.GetTile(cell) != null)
             {
-                cell = new Vector3Int(cell.x + 1, cell.y);
+                cell += directions[Random.Range(0, directions.Length)];
             }
 
             if (ground.cellBounds.Contains(cell))

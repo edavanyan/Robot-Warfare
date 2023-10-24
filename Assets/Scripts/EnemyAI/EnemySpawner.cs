@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Cameras;
 using Grid;
+using Loots;
 using UnityEngine;
 using Utils;
 using Utils.Pool;
@@ -15,8 +18,21 @@ namespace EnemyAI
         public float spawnRate;
         public int limit;
         public Map map;
+        public LootManager lootManager;
+
+        private readonly Direction[] directions =
+        {
+            new() { OnX = false, OnY = false },
+            new() { OnX = true, OnY = false },
+            new() { OnX = true, OnY = true },
+            new() { OnX = false, OnY = true }
+        };
+
+        private int directionIndex = 0;
 
         private ComponentPool<Enemy> enemyPool;
+
+        private readonly List<Enemy> activeEnemies = new();
 
         void Start()
         {
@@ -24,34 +40,57 @@ namespace EnemyAI
             InvokeRepeating(nameof(Spawn), 1f, spawnRate);
         }
 
-        private int count = 0;
-
         void Spawn()
         {
-            if (++count > limit)
+            if (activeEnemies.Count > limit)
             {
-                CancelInvoke(nameof(Spawn));
                 return;
             }
-
             var enemyPosition = Constants.Nan;
             while (enemyPosition == Constants.Nan)
             {
                 var boundsMax = camera.CameraBoundsMax;
                 var boundsMin = camera.CameraBoundsMin;
-                var randomAxis = Random.value > 0.5f;
-                var isMax = Random.value > 0.5f;
+                var randomAxis = directions[directionIndex].OnX;
+                var isMax = directions[directionIndex].OnY;
                 var spawnPointX = randomAxis ? Random.Range(boundsMin.x, boundsMax.x) :
-                    isMax ? boundsMax.x + 1 : boundsMin.x - 1;
+                    isMax ? boundsMax.x + 0.5f : boundsMin.x - 0.5f;
                 var spawnPointY = randomAxis
-                    ? isMax ? boundsMax.y + 1 : boundsMin.y - 1
+                    ? isMax ? boundsMax.y + 0.5f : boundsMin.y - 0.5f
                     : Random.Range(boundsMin.y, boundsMax.y);
                 enemyPosition = map.GetFreeTileAt(spawnPointX, spawnPointY);
+
+                directionIndex++;
+                if (directionIndex >= directions.Length)
+                {
+                    directionIndex = 0;
+                } 
             }
 
-            var enemy = enemyPool.NewItem();
-            enemy.transform.position = enemyPosition;
-            enemy.OnDie += () => enemyPool.DestroyItem(enemy);
+
+            var spawnCount = Random.Range(3, 10);
+            for (var i = 0; i < spawnCount; i++)
+            {
+                var enemy = enemyPool.NewItem();
+                activeEnemies.Add(enemy);
+                enemy.transform.position = enemyPosition;
+                enemyPosition += enemyPosition * 0.01f;
+                enemy.OnDie += () =>
+                {
+                    if (activeEnemies.Contains(enemy))
+                    {
+                        activeEnemies.Remove(enemy);
+                        enemyPool.DestroyItem(enemy);
+                        lootManager.DropLoot(enemy);
+                    }
+                };
+            }
         }
+    }
+
+    struct Direction
+    {
+        public bool OnX;
+        public bool OnY;
     }
 }

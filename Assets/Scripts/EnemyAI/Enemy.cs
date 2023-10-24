@@ -1,5 +1,6 @@
 using System;
 using Attack;
+using DG.Tweening;
 using PlayerController;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,8 +28,15 @@ namespace EnemyAI
         private HitPoints hitPoints;
         public event Action OnDie;
 
+        private bool dead;
+
+        private CircleCollider2D circleCollider2D;
+
+        public int xpAmount; 
+
         private void Awake()
         {
+            circleCollider2D = GetComponentInChildren<CircleCollider2D>();
             animationController = new EnemyAnimation(animator, transform);
             hitPoints = new HitPoints(maxHealth);
             
@@ -45,9 +53,12 @@ namespace EnemyAI
 
         public void Hit(int amount)
         {
-            hitPoints.Hit(amount);
             animationController.HitAnimation();
-            rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * 1.5f, ForceMode2D.Impulse);
+            if (!hitPoints.Hit(amount))
+            {
+                rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * 1.5f,
+                    ForceMode2D.Impulse);
+            }
         }
 
         private void AdjustRotation()
@@ -63,6 +74,10 @@ namespace EnemyAI
 
         private void FixedUpdate()
         {
+            if (dead)
+            {
+                return;
+            }
             var acceleration = Vector2.zero;
             foreach (var steering in steeringList)
             {
@@ -85,15 +100,37 @@ namespace EnemyAI
             }
         }
 
+        private void Die()
+        {
+            circleCollider2D.enabled = false;
+            rigidBody.velocity = Vector2.zero;
+            dead = true;
+            transform.DOScale(Vector3.zero, 0.1f).OnComplete(() =>
+            {
+                transform.localScale = Vector3.one;
+                animationController.DieAnimation();
+                Invoke(nameof(DieInvoke), 0.15f);
+            });
+        }
+
+        private void DieInvoke()
+        {
+            OnDie?.Invoke();
+        }
+
         public void New()
         {
+            transform.localScale = Vector3.one;
+            dead = false;
+            circleCollider2D.enabled = true;
             gameObject.SetActive(true);
-            hitPoints.OnDie += () => OnDie?.Invoke();
+            hitPoints.OnDie += Die;
+            hitPoints.Reset();
         }
 
         public void Free()
         {
-            hitPoints.Reset();
+            transform.localScale = Vector3.one;
             gameObject.SetActive(false);
         }
     }
