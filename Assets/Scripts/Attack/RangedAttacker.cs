@@ -6,7 +6,7 @@ namespace Attack
 {
     public class RangedAttacker : Attacker
     {
-        private readonly Collider2D[] targets = new Collider2D[20];
+        private readonly Collider2D[] targets = new Collider2D[5];
         protected override IEnumerator FindTargetAndAttack()
         {
             while (canAttack)
@@ -20,7 +20,7 @@ namespace Attack
                     } 
                     Attack(targets[0].transform);
                     Array.Clear(targets, 0, targets.Length);
-                    yield return new WaitForSeconds(attackSpeed);
+                    yield return new WaitForSeconds(inverseSpeed);
                 }
 
                 yield return null;

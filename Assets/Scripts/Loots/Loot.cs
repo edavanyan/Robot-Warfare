@@ -1,7 +1,5 @@
 using System;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,9 +14,17 @@ namespace Loots
         public event Action onCollected;
         private bool isCollecting;
         private Vector3 headOffset = new Vector3(0, 0.25f, 0);
+        private new SpriteRenderer renderer;
+        private static string UILayer = "UI";
+        private static string GroundLayer = "Ground";
 
+        public LootType lootType;
+        public int amount;
+        
+        
         private void Awake()
         {
+            renderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             circleCollider2D = GetComponent<CircleCollider2D>();
         }
@@ -31,14 +37,17 @@ namespace Loots
             }
         }
 
-        public void Set(RuntimeAnimatorController animatorController)
+        public void Set(LootType type, int count, RuntimeAnimatorController animatorController)
         {
+            amount = count;
+            lootType = type;
             animator.runtimeAnimatorController = animatorController;
         }
 
         void StartCollecting(Transform collector)
         {
             if (isCollecting) return;
+            renderer.sortingLayerName = UILayer;
             isCollecting = true;
             circleCollider2D.enabled = false;
             headOffset.y = Random.Range(0, 0.5f);
@@ -63,8 +72,14 @@ namespace Loots
 
         public void Free()
         {
+            renderer.sortingLayerName = GroundLayer;
             isCollecting = false;
             gameObject.SetActive(false);
         }
+    }
+
+    public enum LootType
+    {
+        Xp, Gold
     }
 }

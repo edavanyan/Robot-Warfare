@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Attack;
+using Loots;
 using StateMachine;
 using UI;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 namespace PlayerController
 {
@@ -23,9 +25,21 @@ namespace PlayerController
         [SerializeField] private Vector3 barOffset = new Vector3(0, -0.1f, 0);
 
         private HitPoints hitPoints;
+        private XPoints xPoints;
 
         protected override void Awake()
         {
+            xPoints = new XPoints
+            {
+                Level = 1
+            };
+            xPoints.OnLevelUp += level =>
+            {
+                attackerAgent.damage += 1;
+                attackerAgent.attackRange += 0.1f;
+                attackerAgent.AttackSpeed += 0.1f;
+            };
+            
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () => Debug.Log("Player Die");
             hpBar.MaxValue = hpBar.Value = maxHealth;
@@ -62,6 +76,14 @@ namespace PlayerController
         private void LateUpdate()
         {
             hpBar.transform.position = transform.position + barOffset;
+        }
+
+        public void LootCollected(Loot loot)
+        {
+            if (loot.lootType == LootType.Xp)
+            {
+                xPoints.Xp += loot.amount;
+            }
         }
     }
 }

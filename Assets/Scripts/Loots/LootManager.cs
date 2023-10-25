@@ -1,5 +1,6 @@
 using System;
 using EnemyAI;
+using PlayerController;
 using UnityEngine;
 using Utils.Pool;
 
@@ -24,8 +25,12 @@ namespace Loots
         {
             var loot = lootPool.NewItem();
             loot.transform.position = enemy.transform.position;
-            loot.Set(lootBlue.runtimeAnimatorController);
-            loot.onCollected += () => lootPool.DestroyItem(loot);
+            loot.Set(LootType.Xp, 1, lootBlue.runtimeAnimatorController);
+            loot.onCollected += () =>
+            {
+                PlayerCharacterProvider.PlayerCharacter.LootCollected(loot);
+                lootPool.DestroyItem(loot);
+            };
         }
     }
 }

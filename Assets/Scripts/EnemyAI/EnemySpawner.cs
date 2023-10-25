@@ -14,11 +14,11 @@ namespace EnemyAI
     {
         // ReSharper disable once NotAccessedField.Global
         public new SmoothCamera2D camera;
-        public Enemy enemyInstance;
         public float spawnRate;
+        public float delay;
         public int limit;
         public Map map;
-        public LootManager lootManager;
+        public BoxCollider2D spawnArea;
 
         private readonly Direction[] directions =
         {
@@ -30,22 +30,23 @@ namespace EnemyAI
 
         private int directionIndex = 0;
 
-        private ComponentPool<Enemy> enemyPool;
+        [SerializeField] private EnemyFactory enemyFactory;
 
-        private readonly List<Enemy> activeEnemies = new();
 
         void Start()
         {
-            enemyPool = new ComponentPool<Enemy>(enemyInstance);
-            InvokeRepeating(nameof(Spawn), 1f, spawnRate);
+            if (spawnRate > 0)
+            {
+                InvokeRepeating(nameof(SpawnAtArea), delay, spawnRate);
+            }
+            else
+            {
+                SpawnAtPosition(limit);
+            }
         }
 
         void Spawn()
         {
-            if (activeEnemies.Count > limit)
-            {
-                return;
-            }
             var enemyPosition = Constants.Nan;
             while (enemyPosition == Constants.Nan)
             {
@@ -71,21 +72,39 @@ namespace EnemyAI
             var spawnCount = Random.Range(3, 10);
             for (var i = 0; i < spawnCount; i++)
             {
-                var enemy = enemyPool.NewItem();
-                activeEnemies.Add(enemy);
-                enemy.transform.position = enemyPosition;
+                enemyFactory.CreateEnemy(enemyPosition);
                 enemyPosition += enemyPosition * 0.01f;
-                enemy.OnDie += () =>
-                {
-                    if (activeEnemies.Contains(enemy))
-                    {
-                        activeEnemies.Remove(enemy);
-                        enemyPool.DestroyItem(enemy);
-                        lootManager.DropLoot(enemy);
-                    }
-                };
             }
         }
+
+        void SpawnAtPosition()
+        {
+            SpawnAtPosition(0);
+        }
+
+        void SpawnAtPosition(int count)
+        {
+            var spawnCount = count > 0 ? count : Random.Range(3, 10);
+            for (var i = 0; i < spawnCount; i++)
+            {
+                enemyFactory.CreateEnemy(transform.position);
+            }
+        }
+
+        void SpawnAtArea()
+        {
+            var spawnCount = Random.Range(3, 10);
+            for (var i = 0; i < spawnCount; i++)
+            {
+                var position = new Vector2();
+                var spawnAreaBounds = spawnArea.bounds;
+                position.x = Random.Range(spawnAreaBounds.min.x, spawnAreaBounds.max.x);
+                position.y = Random.Range(spawnAreaBounds.min.y, spawnAreaBounds.max.y);
+                enemyFactory.CreateEnemy(position);
+            }
+
+        }
+
     }
 
     struct Direction

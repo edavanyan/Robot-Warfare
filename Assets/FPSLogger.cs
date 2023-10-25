@@ -16,7 +16,11 @@ public class FPSLogger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+#if !UNITY_EDITOR        
+#if UNITY_IOS || UNITY_ANDROID
         Application.targetFrameRate = 120;
+#endif
+#endif
     }
 
     // Update is called once per frame

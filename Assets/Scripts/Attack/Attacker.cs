@@ -15,6 +15,16 @@ namespace Attack
         public Projectile projectile;
         public float damage;
         public float attackSpeed;
+        protected float inverseSpeed;
+        public float AttackSpeed
+        {
+            get => attackSpeed;
+            set
+            {
+                attackSpeed = value;
+                inverseSpeed = 1f / attackSpeed;
+            }
+        }
         public float attackRange;
         public LayerMask targetLayer;
         protected bool canAttack = true;
@@ -26,7 +36,7 @@ namespace Attack
         private void Start()
         {
             projectilePool = new ComponentPool<Projectile>(projectile);
-            attackSpeed = 1 / attackSpeed;
+            inverseSpeed = 1f / attackSpeed;
             StartCoroutine(nameof(FindTargetAndAttack));
         }
 
@@ -38,7 +48,7 @@ namespace Attack
                 if (possibleTarget)
                 {
                     Attack(possibleTarget.transform);
-                    yield return new WaitForSeconds(attackSpeed);
+                    yield return new WaitForSeconds(inverseSpeed);
                 }
 
                 yield return null;

@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAcceleration: 3
-  maxSpeed: 0.75
+  maxSpeed: 0.85
   drag: 1
   maxHealth: 10
   animator: {fileID: 3104858182561323225}
