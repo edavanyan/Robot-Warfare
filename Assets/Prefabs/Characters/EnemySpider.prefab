@@ -216,12 +216,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c482b2e886464d2da1e06243c3fda01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAcceleration: 2
-  maxSpeed: 0.5
+  maxAcceleration: 3
+  maxSpeed: 0.75
   drag: 1
   maxHealth: 10
   animator: {fileID: 3104858182561323225}
   targetRadius: 0.1
+  xpAmount: 0
 --- !u!1 &4650222428755315542
 GameObject:
   m_ObjectHideFlags: 0
