@@ -64,6 +64,42 @@ namespace GameInput
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TouchInput"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""0f38dfd9-9dfc-433c-a0c5-097832006c13"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TouchPress"",
+                    ""type"": ""Button"",
+                    ""id"": ""8117fab1-f5d3-45af-b116-113043ac159d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TouchPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""bc49fd00-c064-4fde-b0c7-a559b5666294"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TouchRelease"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e617a8d-0d29-4cb3-b6cc-369c4bee0549"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,6 +201,50 @@ namespace GameInput
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0277282d-f324-4601-afdf-fa5d125f99ef"",
+                    ""path"": ""<Touchscreen>/primaryTouch"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0c5cc3e-e397-4c68-b393-f6aa13280a81"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchPress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74ad8017-82fd-4cb5-94b3-d16e322fba1f"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e0123aa-4422-4e65-bf8b-4041f144fd6b"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchRelease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -177,6 +257,10 @@ namespace GameInput
             m_Game_CancelAction = m_Game.FindAction("CancelAction", throwIfNotFound: true);
             m_Game_MousePosition = m_Game.FindAction("MousePosition", throwIfNotFound: true);
             m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
+            m_Game_TouchInput = m_Game.FindAction("TouchInput", throwIfNotFound: true);
+            m_Game_TouchPress = m_Game.FindAction("TouchPress", throwIfNotFound: true);
+            m_Game_TouchPosition = m_Game.FindAction("TouchPosition", throwIfNotFound: true);
+            m_Game_TouchRelease = m_Game.FindAction("TouchRelease", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -242,6 +326,10 @@ namespace GameInput
         private readonly InputAction m_Game_CancelAction;
         private readonly InputAction m_Game_MousePosition;
         private readonly InputAction m_Game_Movement;
+        private readonly InputAction m_Game_TouchInput;
+        private readonly InputAction m_Game_TouchPress;
+        private readonly InputAction m_Game_TouchPosition;
+        private readonly InputAction m_Game_TouchRelease;
         public struct GameActions
         {
             private @InputActions m_Wrapper;
@@ -250,6 +338,10 @@ namespace GameInput
             public InputAction @CancelAction => m_Wrapper.m_Game_CancelAction;
             public InputAction @MousePosition => m_Wrapper.m_Game_MousePosition;
             public InputAction @Movement => m_Wrapper.m_Game_Movement;
+            public InputAction @TouchInput => m_Wrapper.m_Game_TouchInput;
+            public InputAction @TouchPress => m_Wrapper.m_Game_TouchPress;
+            public InputAction @TouchPosition => m_Wrapper.m_Game_TouchPosition;
+            public InputAction @TouchRelease => m_Wrapper.m_Game_TouchRelease;
             public InputActionMap Get() { return m_Wrapper.m_Game; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -271,6 +363,18 @@ namespace GameInput
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @TouchInput.started += instance.OnTouchInput;
+                @TouchInput.performed += instance.OnTouchInput;
+                @TouchInput.canceled += instance.OnTouchInput;
+                @TouchPress.started += instance.OnTouchPress;
+                @TouchPress.performed += instance.OnTouchPress;
+                @TouchPress.canceled += instance.OnTouchPress;
+                @TouchPosition.started += instance.OnTouchPosition;
+                @TouchPosition.performed += instance.OnTouchPosition;
+                @TouchPosition.canceled += instance.OnTouchPosition;
+                @TouchRelease.started += instance.OnTouchRelease;
+                @TouchRelease.performed += instance.OnTouchRelease;
+                @TouchRelease.canceled += instance.OnTouchRelease;
             }
 
             private void UnregisterCallbacks(IGameActions instance)
@@ -287,6 +391,18 @@ namespace GameInput
                 @Movement.started -= instance.OnMovement;
                 @Movement.performed -= instance.OnMovement;
                 @Movement.canceled -= instance.OnMovement;
+                @TouchInput.started -= instance.OnTouchInput;
+                @TouchInput.performed -= instance.OnTouchInput;
+                @TouchInput.canceled -= instance.OnTouchInput;
+                @TouchPress.started -= instance.OnTouchPress;
+                @TouchPress.performed -= instance.OnTouchPress;
+                @TouchPress.canceled -= instance.OnTouchPress;
+                @TouchPosition.started -= instance.OnTouchPosition;
+                @TouchPosition.performed -= instance.OnTouchPosition;
+                @TouchPosition.canceled -= instance.OnTouchPosition;
+                @TouchRelease.started -= instance.OnTouchRelease;
+                @TouchRelease.performed -= instance.OnTouchRelease;
+                @TouchRelease.canceled -= instance.OnTouchRelease;
             }
 
             public void RemoveCallbacks(IGameActions instance)
@@ -310,6 +426,10 @@ namespace GameInput
             void OnCancelAction(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
             void OnMovement(InputAction.CallbackContext context);
+            void OnTouchInput(InputAction.CallbackContext context);
+            void OnTouchPress(InputAction.CallbackContext context);
+            void OnTouchPosition(InputAction.CallbackContext context);
+            void OnTouchRelease(InputAction.CallbackContext context);
         }
     }
 }
