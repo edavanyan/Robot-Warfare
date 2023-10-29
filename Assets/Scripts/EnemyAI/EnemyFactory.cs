@@ -14,7 +14,7 @@ namespace EnemyAI
 
         private readonly List<Enemy> activeEnemies = new();
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             enemyPool = new ComponentPool<Enemy>(enemyInstance);
         }

@@ -6,23 +6,30 @@ namespace Attack
 {
     public class RangedAttacker : Attacker
     {
-        private readonly Collider2D[] targets = new Collider2D[5];
+        private float startArea = 0f;
+
         protected override IEnumerator FindTargetAndAttack()
         {
             while (canAttack)
             {
-                var count = Physics2D.OverlapCircleNonAlloc(transform.position, attackRange, targets,targetLayer);
-                if (count > 0)
+                while (startArea < attackRange)
                 {
-                    if (targets.Length > 1)
+                    startArea += 0.5f;
+                    if (startArea > attackRange)
                     {
-                        Array.Sort(targets, ClosestComparison);
-                    } 
-                    Attack(targets[0].transform);
-                    Array.Clear(targets, 0, targets.Length);
-                    yield return new WaitForSeconds(inverseSpeed);
-                }
+                        startArea = attackRange;
+                    }
+                    var target = Physics2D.OverlapCircle(transform.position, startArea,targetLayer);
+                    if (target)
+                    {
+                        Attack(target.transform);
+                        yield return new WaitForSeconds(inverseSpeed);
 
+                        break;
+                    }
+                }
+                
+                startArea = 0f;
                 yield return null;
             }
         }

@@ -43,15 +43,15 @@ namespace Cameras
         {
             destination = position + moveDirection * offset;
             var smoothPosition = Vector3.Lerp(transform.position, destination, smoothSpeed * Time.deltaTime);
-            smoothPosition.x = Mathf.Clamp(smoothPosition.x, mapBoundsMin.x, mapBoundsMax.x);
-            smoothPosition.y = Mathf.Clamp(smoothPosition.y, mapBoundsMin.y, mapBoundsMax.y);
+            // smoothPosition.x = Mathf.Clamp(smoothPosition.x, mapBoundsMin.x, mapBoundsMax.x);
+            // smoothPosition.y = Mathf.Clamp(smoothPosition.y, mapBoundsMin.y, mapBoundsMax.y);
             smoothPosition.z = -10f;
             transform.position = smoothPosition;
         }
 
         private void LateUpdate()
         {
-            var direction = character.GetCurrentSpeed().normalized;
+            var direction = character.GetMoveDirection().normalized;
             Move(target.position);
             moveDirection = Vector2.Lerp(moveDirection, direction, Time.deltaTime * cameraAcceleration);
         }

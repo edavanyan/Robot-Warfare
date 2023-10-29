@@ -14,7 +14,18 @@ namespace PlayerController
         [SerializeField] private HpBar hpBar;
         public LayerMask ObstaclesLayer;
         public CharacterAnimation CharacterAnimation;
-        public Vector2 Input = Vector2.zero;
+        private Vector2 input = new Vector2(); 
+        public Vector2 Input
+        {
+            get => input;
+            set
+            {
+                input = value;
+                var scale = transform.localScale;
+                directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
+                directionIndicator.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(value.y, value.x) * Mathf.Rad2Deg);
+            }
+        }
         [SerializeField] private Animator animator;
         public CircleCollider2D CircleCollider2D;
         public Rigidbody2D rigidBody;
@@ -23,6 +34,7 @@ namespace PlayerController
         [SerializeField] private Attacker attackerAgent;
         [SerializeField] private int maxHealth;
         [SerializeField] private Vector3 barOffset = new Vector3(0, -0.1f, 0);
+        [SerializeField] private Transform directionIndicator;
 
         private HitPoints hitPoints;
         private XPoints xPoints;
@@ -56,7 +68,7 @@ namespace PlayerController
             base.Awake();
         }
 
-        public Vector2 GetCurrentSpeed()
+        public Vector2 GetMoveDirection()
         {
             return activeState.GetPlayerMoveDirection();
         }

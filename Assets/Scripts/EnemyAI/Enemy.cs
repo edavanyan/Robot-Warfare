@@ -45,7 +45,7 @@ namespace EnemyAI
             target = PlayerCharacterProvider.PlayerCharacter.transform;
             InitializeSteeringList();
             
-            InvokeRepeating(nameof(AdjustRotation), Random.Range(0f, 0.2f), Random.Range(0.1f, 0.3f));
+            InvokeRepeating(nameof(AdjustRotation), 0.2f, 0.05f);
             
             attacker = GetComponentInChildren<Attacker>();
             attacker.OnAttack += animationController.AttackAnimation;

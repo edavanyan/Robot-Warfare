@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cameras;
 using Grid;
 using Loots;
@@ -27,10 +29,9 @@ namespace EnemyAI
             new() { OnX = true, OnY = true },
             new() { OnX = false, OnY = true }
         };
-
         private int directionIndex = 0;
-
         [SerializeField] private EnemyFactory enemyFactory;
+        private int spawnCount;
 
 
         void Start()
@@ -41,7 +42,8 @@ namespace EnemyAI
             }
             else
             {
-                SpawnAtPosition(limit);
+                spawnCount = limit;
+                Invoke(nameof(SpawnAtPosition), delay);
             }
         }
 
@@ -68,7 +70,6 @@ namespace EnemyAI
                 } 
             }
 
-
             var spawnCount = Random.Range(3, 10);
             for (var i = 0; i < spawnCount; i++)
             {
@@ -79,7 +80,7 @@ namespace EnemyAI
 
         void SpawnAtPosition()
         {
-            SpawnAtPosition(0);
+            SpawnAtPosition(spawnCount);
         }
 
         void SpawnAtPosition(int count)
@@ -93,18 +94,22 @@ namespace EnemyAI
 
         void SpawnAtArea()
         {
-            var spawnCount = Random.Range(3, 10);
-            for (var i = 0; i < spawnCount; i++)
+            var count = Random.Range(3, 10);
+            StartCoroutine(nameof(SpawnAtAreaRoutine), count);
+        }
+
+        IEnumerator SpawnAtAreaRoutine(int count)
+        {
+            for (var i = 0; i < count; i++)
             {
                 var position = new Vector2();
                 var spawnAreaBounds = spawnArea.bounds;
                 position.x = Random.Range(spawnAreaBounds.min.x, spawnAreaBounds.max.x);
                 position.y = Random.Range(spawnAreaBounds.min.y, spawnAreaBounds.max.y);
                 enemyFactory.CreateEnemy(position);
+                yield return new WaitForSeconds(0.1f);
             }
-
         }
-
     }
 
     struct Direction

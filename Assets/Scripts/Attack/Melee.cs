@@ -13,7 +13,6 @@ namespace Attack
 
         public override void New()
         {
-        
         }
     }
 }
