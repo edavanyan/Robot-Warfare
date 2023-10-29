@@ -43,7 +43,7 @@ namespace Grid
             var chunk = CreateTerrainChunk(Vector2.zero);
             var position = chunk.transform.position;
             var boxCollider2D = chunk.GetComponent<BoxCollider2D>();
-            chunkSize = boxCollider2D.size.x;
+            chunkSize = 20;
             offset = boxCollider2D.offset;
             current = chunk.gameObject;
 
