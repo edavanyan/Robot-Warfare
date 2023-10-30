@@ -49,7 +49,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4868588677255133739
 Transform:
   m_ObjectHideFlags: 0
@@ -516,7 +516,7 @@ SpriteRenderer:
   m_SortingLayerID: -641436669
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -177116635, guid: 081dd4dcc48ee42178aac55ccb8a9741, type: 3}
+  m_Sprite: {fileID: 1438006456, guid: 89e62185d3be54d8eaab2e32635972cf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -526,7 +526,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &8365104044526638512
 Animator:
   serializedVersion: 5
@@ -537,7 +537,7 @@ Animator:
   m_GameObject: {fileID: 7683566908265132259}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 47d9e03f420494ce49dc34b6b9edb9a4, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2e019dcdedb0a4118861696772f3beae, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -580,8 +580,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.1}
-  m_Size: {x: 0.061527487, y: 0.061527625}
+  m_Offset: {x: -0.042699337, y: 0.10927123}
+  m_Size: {x: 0.4019556, y: 0.40195572}
   m_Direction: 0
 --- !u!1 &8723722715266174079
 GameObject:
@@ -640,7 +640,6 @@ MonoBehaviour:
   ObstaclesLayer:
     serializedVersion: 2
     m_Bits: 64
-  Input: {x: 0, y: 0}
   animator: {fileID: 8365104044526638512}
   CircleCollider2D: {fileID: 0}
   rigidBody: {fileID: 0}
@@ -658,6 +657,7 @@ MonoBehaviour:
   attackerAgent: {fileID: 7838609484023919939}
   maxHealth: 100
   barOffset: {x: 0, y: -0.15, z: 0}
+  directionIndicator: {fileID: 2191504888040601791}
 --- !u!50 &499568825934925064
 Rigidbody2D:
   serializedVersion: 4

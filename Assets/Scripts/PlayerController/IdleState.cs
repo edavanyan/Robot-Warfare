@@ -10,7 +10,7 @@ namespace PlayerController
 
         public override void PlayStateAnimation()
         {
-            animation.IdleAnimation();
+            // animation.IdleAnimation();
         }
 
         public override Vector2 GetPlayerMoveDirection()

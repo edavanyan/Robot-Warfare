@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c482b2e886464d2da1e06243c3fda01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAcceleration: 0.5
+  maxAcceleration: 1
   maxSpeed: 0.85
   drag: 1
   maxHealth: 10
@@ -267,11 +267,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e7c942f26b14be98c8794b99fce75e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera2D: {fileID: 0}
   projectile: {fileID: 7936001040826742282, guid: 076b4eeab1e114fa69df762efd08d867, type: 3}
   damage: 10
   attackSpeed: 2
-  attackRange: 0.3
+  attackRange: 0.5
   targetLayer:
     serializedVersion: 2
     m_Bits: 256

@@ -4,7 +4,6 @@ using DG.Tweening;
 using PlayerController;
 using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace EnemyAI
 {
@@ -26,6 +25,7 @@ namespace EnemyAI
         private EnemyAnimation animationController;
 
         private HitPoints hitPoints;
+        public event Action OnFaraway;
         public event Action OnDie;
 
         private bool dead;
@@ -68,7 +68,7 @@ namespace EnemyAI
 
         private void InitializeSteeringList()
         {
-            steeringList[0] = new SeekBehavior(3);
+            steeringList[0] = new SeekBehavior(1);
             steeringList[1] = new ArriveBehavior(1);
         }
 
@@ -97,6 +97,14 @@ namespace EnemyAI
             else
             {
                 animationController.IdleAnimation();
+            }
+
+            var targetPosition = target.position;
+            var position = transform.position;
+            if (Mathf.Abs(targetPosition.x - position.x) > 15f ||
+                Mathf.Abs(targetPosition.y - position.y) > 9f)
+            {
+                OnFaraway?.Invoke();
             }
         }
 

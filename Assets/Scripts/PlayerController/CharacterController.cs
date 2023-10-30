@@ -11,25 +11,13 @@ namespace PlayerController
 {
     public class CharacterController : StateRunner<CharacterController>, IHittable
     {
-        [SerializeField] private HpBar hpBar;
-        public LayerMask ObstaclesLayer;
+        private HpBar hpBar;
         public CharacterAnimation CharacterAnimation;
-        private Vector2 input = new Vector2(); 
-        public Vector2 Input
-        {
-            get => input;
-            set
-            {
-                input = value;
-                var scale = transform.localScale;
-                directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
-                directionIndicator.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(value.y, value.x) * Mathf.Rad2Deg);
-            }
-        }
+        public Vector2 Input { get; set; }
+
         [SerializeField] private Animator animator;
-        public CircleCollider2D CircleCollider2D;
         public Rigidbody2D rigidBody;
-        public Dictionary<string, Sprite> shadowSprites;
+        public Dictionary<string, Sprite> ShadowSprites;
         [SerializeField] private Sprite[] shadows;
         [SerializeField] private Attacker attackerAgent;
         [SerializeField] private int maxHealth;
@@ -54,16 +42,19 @@ namespace PlayerController
             
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () => Debug.Log("Player Die");
+
+            hpBar = FindObjectOfType<HpBar>();
             hpBar.MaxValue = hpBar.Value = maxHealth;
+            
             rigidBody = GetComponent<Rigidbody2D>();
             CharacterAnimation = new CharacterAnimation(animator, transform);
-            shadowSprites = new Dictionary<string, Sprite>();
+            ShadowSprites = new Dictionary<string, Sprite>();
             foreach (var shadow in shadows)
             {
                 var name = shadow.name;
                 var shadowSize = "shadow_".Length + 1;
                 var key = string.Concat(name.Substring(0, name.Length - shadowSize), shadow.name.Substring(name.Length - 1, 1));
-                shadowSprites.Add(key, shadow);
+                ShadowSprites.Add(key, shadow);
             }
             base.Awake();
         }
@@ -87,7 +78,22 @@ namespace PlayerController
 
         private void LateUpdate()
         {
-            hpBar.transform.position = transform.position + barOffset;
+            var transform1 = transform;
+            hpBar.transform.position = transform1.position + barOffset;
+            
+            var scale = transform1.localScale;
+            directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
+            var moveDirection = GetMoveDirection();
+            if (moveDirection.sqrMagnitude > 0)
+            {
+                directionIndicator.gameObject.SetActive(true);
+                directionIndicator.rotation =
+                    Quaternion.Euler(0, 0, Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg);
+            }
+            else
+            {
+                directionIndicator.gameObject.SetActive(false);
+            }
         }
 
         public void LootCollected(Loot loot)

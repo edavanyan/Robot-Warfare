@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cameras;
-using PlayerController;
 using UnityEngine;
 using Utils.Pool;
 
@@ -10,8 +9,8 @@ namespace Attack
 {
     public class Attacker : MonoBehaviour
     {
-        [SerializeField] private SmoothCamera2D camera2D;
-        private ComponentPool<Projectile> projectilePool;
+        private SmoothCamera2D camera2D;
+        protected ComponentPool<Projectile> projectilePool;
         public Projectile projectile;
         public float damage;
         public float attackSpeed;
@@ -35,6 +34,7 @@ namespace Attack
 
         private void Start()
         {
+            camera2D = FindObjectOfType<SmoothCamera2D>();
             projectilePool = new ComponentPool<Projectile>(projectile);
             inverseSpeed = 1f / attackSpeed;
             StartCoroutine(nameof(FindTargetAndAttack));
@@ -60,20 +60,23 @@ namespace Attack
         {
             var projToFire = projectilePool.NewItem();
             projToFire.transform.position = transform.position;
-            projToFire.Init(target, hit =>
-            {
-                if (hit.gameObject.activeSelf)
-                {
-                    projectilePool.DestroyItem(projToFire);
-                    hit.SendMessage(nameof(IHittable.Hit), damage);
-                    tempForRemoveProj.Add(projToFire);
-                }
-            });
+            projToFire.Init(target, OnHit);
             activeProjectiles.Add(projToFire);
             OnAttack?.Invoke();
         }
 
-        private readonly List<Projectile> tempForRemoveProj = new();
+        // ReSharper disable once ParameterHidesMember
+        protected virtual void OnHit(Transform hitTarget, Projectile projectile)
+        {
+            if (hitTarget.gameObject.activeSelf)
+            {
+                projectilePool.DestroyItem(projectile);
+                hitTarget.SendMessage(nameof(IHittable.Hit), damage);
+                tempForRemoveProj.Add(projectile);
+            }
+        }
+
+        protected readonly List<Projectile> tempForRemoveProj = new();
         private void FixedUpdate()
         {
             if (type == AttackType.Ranged)

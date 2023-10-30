@@ -6,8 +6,10 @@ namespace PlayerController
     {
         private readonly Animator animator;
         private readonly Transform transform;
-        private static readonly int IsWalking = Animator.StringToHash("IsWalking");
+        private static readonly int IsWalkingHorizontal = Animator.StringToHash("IsWalkingHorizontal");
+        private static readonly int IsWalkingVertical = Animator.StringToHash("IsWalkingVertical");
         private static readonly int IsIdle = Animator.StringToHash("IsIdle");
+        private static readonly int IsRun = Animator.StringToHash("IsRun");
         private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
 
         private int currentTrigger;
@@ -25,24 +27,53 @@ namespace PlayerController
                 transform.localScale = new Vector3(Mathf.Sign(xInput), 1, 1);
             }
         }
-        public void WalkingAnimation()
+        public void WalkingHorizontalAnimation()
         {
-            // animator.ResetTrigger(IsIdle);
-            animator.SetTrigger(IsWalking);
-            currentTrigger = IsWalking;
+            if (currentTrigger == IsWalkingHorizontal)
+            {
+                return;
+            }
+            animator.SetTrigger(IsWalkingHorizontal);
+            currentTrigger = IsWalkingHorizontal;
+        }
+        public void WalkingVerticalAnimation()
+        {
+            if (currentTrigger == IsWalkingVertical)
+            {
+                return;
+            }
+            animator.SetTrigger(IsWalkingVertical);
+            currentTrigger = IsWalkingVertical;
+        }
+        public void RunAnimation()
+        {
+            if (currentTrigger == IsRun)
+            {
+                return;
+            }
+            animator.SetTrigger(IsRun);
+            currentTrigger = IsRun;
         }
 
         public void IdleAnimation()
         {
-            // animator.ResetTrigger(IsWalking);
+            if (currentTrigger == IsIdle)
+            {
+                return;
+            }
             animator.SetTrigger(IsIdle);
             currentTrigger = IsIdle;
         }
 
         public void AttackAnimation()
         {
+            animator.ResetTrigger(currentTrigger);
             animator.SetTrigger(IsAttacking);
-            
+        }
+
+        public void PreviousAnimation()
+        {
+            animator.SetTrigger(currentTrigger);
         }
     }
 }

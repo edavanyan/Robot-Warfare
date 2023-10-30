@@ -21,7 +21,6 @@ namespace Grid
         {
             if (other.CompareTag("Player"))
             {
-                print(transform.position);
                 OnTriggerEnter?.Invoke(this);
             }
         }

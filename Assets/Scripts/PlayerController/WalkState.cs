@@ -26,7 +26,7 @@ namespace PlayerController
 
         public override void PlayStateAnimation()
         {
-            animation.WalkingAnimation();
+            // animation.WalkingHorizontalAnimation();
         }
 
         public override Vector2 GetPlayerMoveDirection()
@@ -53,10 +53,16 @@ namespace PlayerController
             var position = rigidBody.position;
             var destination = position + currentSpeed * Time.fixedDeltaTime * moveDirection;
 
-            // var collision = Physics2D.OverlapCircle(position + runner.CircleCollider2D.offset, runner.CircleCollider2D.radius, runner.ObstaclesLayer);
-            // Debug.Log(collision);
             rigidBody.MovePosition(destination);
             animation.AdjustSpriteRotation(moveDirection.x);
+            // if (Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y))
+            // {
+            //     animation.WalkingHorizontalAnimation();
+            // }
+            // else if (Mathf.Abs(moveDirection.x) < Mathf.Abs(moveDirection.y))
+            // {
+            //     animation.WalkingVerticalAnimation();
+            // }
         }
 
         public override void ChangeState()

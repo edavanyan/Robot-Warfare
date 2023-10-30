@@ -79,8 +79,12 @@ namespace Grid
                     if (!terrain)
                     {
                         var terrainToDestroy = Physics2D.OverlapCircle(currentPosition + offset - direction.Value * chunkSize, checkRadius, terrainMask);
-                        var terrainChunk = terrainToDestroy.GetComponent<TerrainChunk>();
-                        terrainChunk.Owner?.DestroyItem(terrainChunk);
+                        if (terrainToDestroy)
+                        {
+                            var terrainChunk = terrainToDestroy.GetComponent<TerrainChunk>();
+                            terrainChunk.Owner?.DestroyItem(terrainChunk);
+                        }
+
                         CreateTerrainChunk(position + direction.Value * chunkSize);
                     }
                 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loots;
 using UnityEngine;
@@ -13,12 +14,11 @@ namespace EnemyAI
         private ComponentPool<Enemy> enemyPool;
 
         private readonly List<Enemy> activeEnemies = new();
-        // Start is called before the first frame update
         void Awake()
         {
             enemyPool = new ComponentPool<Enemy>(enemyInstance);
         }
-    
+
         public Enemy CreateEnemy(Vector2 enemyPosition)
         {
             if (activeEnemies.Count >= limit)
@@ -28,16 +28,29 @@ namespace EnemyAI
             var enemy = enemyPool.NewItem();
             activeEnemies.Add(enemy);
             enemy.transform.position = enemyPosition;
+            enemy.OnFaraway += () =>
+            {
+                if (activeEnemies.Count >= 30 && 
+                    activeEnemies.Contains(enemy))
+                {
+                    DestroyEnemy(enemy);
+                }
+            };
             enemy.OnDie += () =>
             {
                 if (activeEnemies.Contains(enemy))
                 {
-                    activeEnemies.Remove(enemy);
-                    enemyPool.DestroyItem(enemy);
+                    DestroyEnemy(enemy);
                     lootManager.DropLoot(enemy);
                 }
             };
             return enemy;
+        }
+
+        private void DestroyEnemy(Enemy enemy)
+        {
+            activeEnemies.Remove(enemy);
+            enemyPool.DestroyItem(enemy);
         }
     }
 }

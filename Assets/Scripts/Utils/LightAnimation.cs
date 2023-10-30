@@ -20,7 +20,7 @@ namespace Utils
         {
             if (light2D.lightCookieSprite != spriteRenderer.sprite)
             {
-                light2D.lightCookieSprite = character.shadowSprites[spriteRenderer.sprite.name];
+                light2D.lightCookieSprite = character.ShadowSprites[spriteRenderer.sprite.name];
             }
         }
     }

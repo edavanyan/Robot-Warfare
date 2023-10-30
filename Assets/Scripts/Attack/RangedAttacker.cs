@@ -19,6 +19,7 @@ namespace Attack
                     {
                         startArea = attackRange;
                     }
+
                     var target = Physics2D.OverlapCircle(transform.position, startArea,targetLayer);
                     if (target)
                     {

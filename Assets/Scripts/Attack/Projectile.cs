@@ -8,11 +8,11 @@ namespace Attack
     {
         private Transform target;
         public float speed;
-        public event Action<Transform> OnTargetHit;
+        public event Action<Transform, Projectile> OnTargetHit;
         private string hitTag;
 
         // ReSharper disable once ParameterHidesMember
-        public virtual void Init(Transform target, Action<Transform> hitCallback)
+        public virtual void Init(Transform target, Action<Transform, Projectile> hitCallback)
         {
             this.target = target;
             hitTag = this.target.tag;
@@ -23,7 +23,7 @@ namespace Attack
         {
             if (other.CompareTag(hitTag))
             {
-                OnTargetHit?.Invoke(other.transform.parent);
+                OnTargetHit?.Invoke(other.transform.parent, this);
             }
         }
 

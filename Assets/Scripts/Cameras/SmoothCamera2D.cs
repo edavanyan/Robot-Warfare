@@ -1,3 +1,4 @@
+using PlayerController;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,7 +11,6 @@ namespace Cameras
         [SerializeField] private float smoothSpeed = 002f;
         [SerializeField] private float offset;
         private Vector2 destination;
-        [SerializeField] private Transform target;
         private PlayerController.CharacterController character;
         [SerializeField] private float cameraAcceleration = 2f;
         [SerializeField] private Tilemap map;
@@ -36,7 +36,7 @@ namespace Cameras
             mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
             mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);
             
-            character = target.gameObject.GetComponent<PlayerController.CharacterController>();
+            character = PlayerCharacterProvider.PlayerCharacter;
         }
 
         private void Move(Vector2 position)
@@ -52,7 +52,7 @@ namespace Cameras
         private void LateUpdate()
         {
             var direction = character.GetMoveDirection().normalized;
-            Move(target.position);
+            Move(character.transform.position);
             moveDirection = Vector2.Lerp(moveDirection, direction, Time.deltaTime * cameraAcceleration);
         }
     }

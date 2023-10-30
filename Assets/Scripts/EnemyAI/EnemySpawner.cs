@@ -21,6 +21,7 @@ namespace EnemyAI
         public int limit;
         public Map map;
         public BoxCollider2D spawnArea;
+        public int maxSpawnCount;
 
         private readonly Direction[] directions =
         {
@@ -94,7 +95,7 @@ namespace EnemyAI
 
         void SpawnAtArea()
         {
-            var count = Random.Range(3, 10);
+            var count = Random.Range(1, maxSpawnCount + 1);
             StartCoroutine(nameof(SpawnAtAreaRoutine), count);
         }
 

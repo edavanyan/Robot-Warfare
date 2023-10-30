@@ -6,7 +6,7 @@ namespace PlayerController
     public class PlayerCharacterProvider : MonoBehaviour
     {
         public static PlayerController.CharacterController PlayerCharacter => Instance.playerCharacter;
-        [SerializeField] private PlayerController.CharacterController playerCharacter;
+        private PlayerController.CharacterController playerCharacter;
         private static PlayerCharacterProvider Instance = null;
 
         private void Awake()
@@ -14,6 +14,7 @@ namespace PlayerController
             if (Instance == null)
             {
                 Instance = this;
+                playerCharacter = FindObjectOfType<CharacterController>();
             }
         }
     }

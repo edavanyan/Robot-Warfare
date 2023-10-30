@@ -6,9 +6,9 @@ namespace Attack
     public class Melee : Projectile
     {
         // ReSharper disable once ParameterHidesMember
-        public override void Init(Transform target, Action<Transform> hitCallback)
+        public override void Init(Transform target, Action<Transform, Projectile> hitCallback)
         {
-            hitCallback(target.parent);
+            hitCallback(target.parent, this);
         }
 
         public override void New()
