@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Attack
@@ -18,26 +17,34 @@ namespace Attack
                 var splashTarget = splashTargets[i].transform.parent;
                 if (splashTarget.gameObject.activeSelf)
                 {
-                    splashTarget.SendMessage(nameof(IHittable.Hit), damage);
+                    projectile.Damage = damage;
+                    projectile.KnockBackForce = 0;
+                    splashTarget.SendMessage(nameof(IHittable.Hit), projectile);
                 }
             }
-            projectilePool.DestroyItem(projectile);
-            tempForRemoveProj.Add(projectile);
+            ProjectilePool.DestroyItem(projectile);
+            TempForRemoveProj.Add(projectile);
         }
         
-        
-        protected override IEnumerator FindTargetAndAttack()
+        //TODO cinematic staff
+        // protected override IEnumerator FindTargetAndAttack()
+        // {
+        //     while (canAttack)
+        //     {
+        //         var target = Physics2D.OverlapCircle(transform.position, 5f,targetLayer);
+        //         if (target)
+        //         {
+        //             Attack(target.transform);
+        //             yield return new WaitForSeconds(InverseSpeed);
+        //         }
+        //         yield return null;
+        //     }
+        // }
+
+        public override void OnLevelUp(int level)
         {
-            while (canAttack)
-            {
-                var target = Physics2D.OverlapCircle(transform.position, 5f,targetLayer);
-                if (target)
-                {
-                    Attack(target.transform);
-                    yield return new WaitForSeconds(inverseSpeed);
-                }
-                yield return null;
-            }
+            base.OnLevelUp(level);
+            splashRadius += 0.1f;
         }
     }
 }

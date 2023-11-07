@@ -1,18 +1,16 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cameras;
+using Grid;
 using UnityEngine;
 using Utils.Pool;
 using CharacterController = PlayerController.CharacterController;
 using Random = UnityEngine.Random;
 
-namespace Grid
+namespace Manager
 {
-    public class MapController : MonoBehaviour
+    public class MapManager : MonoBehaviour
     {
         public List<TerrainChunk> terrainChunks;
-        public CharacterController player;
         private readonly float checkRadius = 0.01f;
         public LayerMask terrainMask;
         public SmoothCamera2D smoothCamera2D;

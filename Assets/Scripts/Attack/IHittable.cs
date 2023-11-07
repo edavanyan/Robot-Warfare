@@ -2,6 +2,6 @@ namespace Attack
 {
     public interface IHittable
     {
-        void Hit(int damageAmount);
+        void Hit(Projectile projectile);
     }
 }

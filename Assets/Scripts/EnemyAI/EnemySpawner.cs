@@ -5,7 +5,9 @@ using System.Threading;
 using Cameras;
 using Grid;
 using Loots;
+using Manager;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 using Utils.Pool;
 using Random = UnityEngine.Random;
@@ -31,7 +33,7 @@ namespace EnemyAI
             new() { OnX = false, OnY = true }
         };
         private int directionIndex = 0;
-        [SerializeField] private EnemyFactory enemyFactory;
+        [FormerlySerializedAs("enemyFactory")] [SerializeField] private EnemyManager enemyManager;
         private int spawnCount;
 
 
@@ -74,7 +76,7 @@ namespace EnemyAI
             var spawnCount = Random.Range(3, 10);
             for (var i = 0; i < spawnCount; i++)
             {
-                enemyFactory.CreateEnemy(enemyPosition);
+                enemyManager.CreateEnemy(enemyPosition);
                 enemyPosition += enemyPosition * 0.01f;
             }
         }
@@ -89,12 +91,16 @@ namespace EnemyAI
             var spawnCount = count > 0 ? count : Random.Range(3, 10);
             for (var i = 0; i < spawnCount; i++)
             {
-                enemyFactory.CreateEnemy(transform.position);
+                enemyManager.CreateEnemy(transform.position);
             }
         }
 
         void SpawnAtArea()
         {
+            if (enemyManager.LimitExceeded)
+            {
+                return;
+            }
             var count = Random.Range(1, maxSpawnCount + 1);
             StartCoroutine(nameof(SpawnAtAreaRoutine), count);
         }
@@ -107,7 +113,7 @@ namespace EnemyAI
                 var spawnAreaBounds = spawnArea.bounds;
                 position.x = Random.Range(spawnAreaBounds.min.x, spawnAreaBounds.max.x);
                 position.y = Random.Range(spawnAreaBounds.min.y, spawnAreaBounds.max.y);
-                enemyFactory.CreateEnemy(position);
+                enemyManager.CreateEnemy(position);
                 yield return new WaitForSeconds(0.1f);
             }
         }

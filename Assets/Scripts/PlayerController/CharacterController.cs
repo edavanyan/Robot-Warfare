@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
 using Attack;
+using DG.Tweening;
 using Loots;
 using StateMachine;
 using UI;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.TextCore.Text;
 
 namespace PlayerController
 {
@@ -19,7 +19,7 @@ namespace PlayerController
         public Rigidbody2D rigidBody;
         public Dictionary<string, Sprite> ShadowSprites;
         [SerializeField] private Sprite[] shadows;
-        [SerializeField] private Attacker attackerAgent;
+        [SerializeField] private Attacker[] attackers;
         [SerializeField] private int maxHealth;
         [SerializeField] private Vector3 barOffset = new Vector3(0, -0.1f, 0);
         [SerializeField] private Transform directionIndicator;
@@ -27,26 +27,42 @@ namespace PlayerController
         private HitPoints hitPoints;
         private XPoints xPoints;
 
+        private SpriteRenderer spriteRenderer;
+
         protected override void Awake()
         {
             xPoints = new XPoints
             {
                 Level = 1
             };
+            foreach (var attacker in attackers)
+            {
+                xPoints.OnLevelUp += attacker.OnLevelUp;
+                attacker.OnAttack += (showAnim) =>
+                {
+                    if (showAnim)
+                    {
+                        CharacterAnimation.AttackAnimation();
+                    }
+                };
+            }
+            //todo for cinematic
             xPoints.OnLevelUp += level =>
             {
-                attackerAgent.damage += 1;
-                attackerAgent.attackRange += 0.1f;
-                attackerAgent.AttackSpeed += 0.1f;
+                if (level == 2 && gameObject.name == "Verdan")
+                {
+                    transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+                    spriteRenderer.DOColor(Color.cyan, 0.05f).SetLoops(6, LoopType.Yoyo).SetEase(Ease.OutSine);
+                }
             };
-            
+
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () => Debug.Log("Player Die");
 
-            hpBar = FindObjectOfType<HpBar>();
-            hpBar.MaxValue = hpBar.Value = maxHealth;
+            // hpBar = FindObjectOfType<HpBar>();
+            // hpBar.MaxValue = hpBar.Value = maxHealth;
             
-            rigidBody = GetComponent<Rigidbody2D>();
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             CharacterAnimation = new CharacterAnimation(animator, transform);
             ShadowSprites = new Dictionary<string, Sprite>();
             foreach (var shadow in shadows)
@@ -64,22 +80,30 @@ namespace PlayerController
             return activeState.GetPlayerMoveDirection();
         }
 
+        public void RemoveStates()
+        {
+            
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(transform.position, 0.25f);
         }
 
-        public void Hit(int damageAmount)
+        public void Hit(Projectile projectile)
         {
-            hitPoints.Hit(damageAmount);
-            hpBar.Change(damageAmount);
+            // spriteRenderer.DOComplete();
+            // spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
+            // CharacterAnimation.HitAnimation();
+            hitPoints.Hit(projectile.Damage);
+            // hpBar.Change(projectile.Damage);
         }
 
         private void LateUpdate()
         {
             var transform1 = transform;
-            hpBar.transform.position = transform1.position + barOffset;
+            // hpBar.transform.position = transform1.position + barOffset;
             
             var scale = transform1.localScale;
             directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
@@ -101,6 +125,12 @@ namespace PlayerController
             if (loot.lootType == LootType.Xp)
             {
                 xPoints.Xp += loot.amount;
+            }
+            else if (loot.lootType == LootType.Sword)
+            {
+                //TODO this is just for cinematic replace this code
+                attackers[0].gameObject.SetActive(true);
+                attackers[1].gameObject.SetActive(false);
             }
         }
     }

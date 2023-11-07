@@ -16,10 +16,13 @@ namespace PlayerController
             animation = parent.CharacterAnimation;
             
             PlayStateAnimation();
-            
-            GameInput.InputActions.Instance.Game.Movement.performed += CaptureInput;
-            GameInput.InputActions.Instance.Game.Movement.canceled += CaptureInput;
-            
+
+            if (parent.active)
+            {
+                GameInput.InputActions.Instance.Game.Movement.performed += CaptureInput;
+                GameInput.InputActions.Instance.Game.Movement.canceled += CaptureInput;
+            }
+
         }
 
         public override void CaptureInput(InputAction.CallbackContext context)
@@ -31,8 +34,11 @@ namespace PlayerController
 
         public override void Exit()
         {
-            GameInput.InputActions.Instance.Game.Movement.performed -= CaptureInput;
-            GameInput.InputActions.Instance.Game.Movement.canceled -= CaptureInput;
+            if (runner.active)
+            {
+                GameInput.InputActions.Instance.Game.Movement.performed -= CaptureInput;
+                GameInput.InputActions.Instance.Game.Movement.canceled -= CaptureInput;
+            }
         }
 
         public abstract Vector2 GetPlayerMoveDirection();

@@ -8,7 +8,7 @@ namespace Attack
         // ReSharper disable once ParameterHidesMember
         public override void Init(Transform target, Action<Transform, Projectile> hitCallback)
         {
-            hitCallback(target.parent, this);
+            hitCallback(target, this);
         }
 
         public override void New()

@@ -10,7 +10,8 @@ namespace PlayerController
         private static readonly int IsWalkingVertical = Animator.StringToHash("IsWalkingVertical");
         private static readonly int IsIdle = Animator.StringToHash("IsIdle");
         private static readonly int IsRun = Animator.StringToHash("IsRun");
-        private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
+        private static readonly int IsAttacking = Animator.StringToHash("IsAttack");
+        private static readonly int IsHit = Animator.StringToHash("IsHit");
 
         private int currentTrigger;
         
@@ -24,7 +25,8 @@ namespace PlayerController
         {
             if (xInput != 0)
             {
-                transform.localScale = new Vector3(Mathf.Sign(xInput), 1, 1);
+                var scale = transform.localScale;
+                transform.localScale = new Vector3(Mathf.Sign(xInput) * scale.y, scale.y, scale.z);
             }
         }
         public void WalkingHorizontalAnimation()
@@ -67,8 +69,12 @@ namespace PlayerController
 
         public void AttackAnimation()
         {
-            animator.ResetTrigger(currentTrigger);
             animator.SetTrigger(IsAttacking);
+        }
+
+        public void HitAnimation()
+        {
+            animator.SetTrigger(IsHit);
         }
 
         public void PreviousAnimation()

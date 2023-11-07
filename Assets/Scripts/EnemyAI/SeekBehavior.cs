@@ -1,3 +1,4 @@
+using PlayerController;
 using UnityEngine;
 
 namespace EnemyAI
@@ -8,9 +9,10 @@ namespace EnemyAI
         
         public override SteeringData GetSteering(Enemy enemy)
         {
+            var target = ObjectProvider.PlayerCharacter.transform;
             var steering = new SteeringData
             {
-                linear = enemy.target.transform.position - enemy.transform.position
+                linear = target.transform.position - enemy.transform.position
             };
             steering.linear.Normalize();
             steering.linear *= enemy.maxAcceleration;

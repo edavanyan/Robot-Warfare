@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 545448605
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 2046855841, guid: 748adaee923ef435aa26a2635ddb6ec7, type: 3}
+  m_Sprite: {fileID: -577002509, guid: 748adaee923ef435aa26a2635ddb6ec7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,5 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaed81782eef84d8ba52e5e9eb4a1986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  circleCollider2D: {fileID: 0}
   lootType: 0
   amount: 0

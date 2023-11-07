@@ -1,5 +1,7 @@
 using System;
+using Cameras;
 using DG.Tweening;
+using PlayerController;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,7 +10,7 @@ namespace Loots
 {
     public class Loot : MonoBehaviour, IPoolable
     {
-        private CircleCollider2D circleCollider2D;
+        public CircleCollider2D circleCollider2D;
         private Animator animator;
 
         public event Action onCollected;
@@ -20,13 +22,59 @@ namespace Loots
 
         public LootType lootType;
         public int amount;
-        
+
+        private new SmoothCamera2D camera;
+        private float horizontalDistance;
+        private float verticalDistance;
+
+        private bool isEnabled = true;
         
         private void Awake()
         {
             renderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             circleCollider2D = GetComponent<CircleCollider2D>();
+            
+            camera = ObjectProvider.Camera2D; 
+            horizontalDistance = camera.cameraBounds.x + 2;
+            verticalDistance = camera.cameraBounds.y + 2;
+        }
+
+        private void Update()
+        {
+            var targetPosition = camera.transform.position;
+            var position = transform.position;
+            if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
+                Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
+            {
+                if (isEnabled)
+                {
+                    Disable();
+                }
+            }
+            else
+            {
+                if (!isEnabled)
+                {
+                    Enable();
+                }
+            }
+        }
+
+        private void Enable()
+        {
+            isEnabled = true;
+            renderer.enabled = isEnabled;
+            // animator.enabled = isEnabled;
+            circleCollider2D.enabled = isEnabled;
+        }
+
+        private void Disable()
+        {
+            isEnabled = false;
+            renderer.enabled = isEnabled;
+            // animator.enabled = isEnabled;
+            circleCollider2D.enabled = isEnabled;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -37,25 +85,23 @@ namespace Loots
             }
         }
 
-        public void Set(LootType type, int count, RuntimeAnimatorController animatorController)
+        public void Set(LootType type, int count)
         {
             amount = count;
             lootType = type;
-            animator.runtimeAnimatorController = animatorController;
         }
 
         void StartCollecting(Transform collector)
         {
+            print("start collecting: " + lootType);
             if (isCollecting) return;
             renderer.sortingLayerName = UILayer;
-            isCollecting = true;
             circleCollider2D.enabled = false;
-            headOffset.y = Random.Range(0, 0.5f);
             var move = transform.DOMove(collector.position + headOffset, 0.3f);
             move.onComplete = OnCollected;
             move.SetEase(Ease.InBack);
             move.easePeriod = 0.2f;
-            move.easeOvershootOrAmplitude = 10;
+            move.easeOvershootOrAmplitude = 7.5f;
         }
 
         private void OnCollected()
@@ -80,6 +126,6 @@ namespace Loots
 
     public enum LootType
     {
-        Xp, Gold
+        Xp, Gold, Sword
     }
 }

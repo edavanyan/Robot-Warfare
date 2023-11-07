@@ -1,21 +1,26 @@
 using System;
 using Attack;
+using Cameras;
 using DG.Tweening;
+using Loots;
 using PlayerController;
 using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
+using Sequence = DG.Tweening.Sequence;
 
 namespace EnemyAI
 {
     public class Enemy : MonoBehaviour, IHittable, IPoolable
     {
         internal Rigidbody2D rigidBody;
-        internal Transform target;
-        private readonly Steering[] steeringList = new Steering[2];
+        // private readonly Steering[] steeringList = new Steering[2];
         public float maxAcceleration = 3f;
+        public float targetRadiusAcceleration = 0.5f;
         public float maxSpeed = 1f;
         public float drag = 1f;
         [SerializeField] private int maxHealth;
+        public LootType LootType { get; set; }
 
         [SerializeField] private Animator animator;
 
@@ -31,45 +36,69 @@ namespace EnemyAI
         private bool dead;
 
         private CircleCollider2D circleCollider2D;
+        private new SmoothCamera2D camera;
+        private float horizontalDistance;
+        private float verticalDistance;
 
-        public int xpAmount; 
+        private SpriteRenderer spriteRenderer;
+
+        public int xpAmount;
+
 
         private void Awake()
         {
             circleCollider2D = GetComponentInChildren<CircleCollider2D>();
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             animationController = new EnemyAnimation(animator, transform);
             hitPoints = new HitPoints(maxHealth);
             
             rigidBody = GetComponent<Rigidbody2D>();
             
-            target = PlayerCharacterProvider.PlayerCharacter.transform;
             InitializeSteeringList();
             
             InvokeRepeating(nameof(AdjustRotation), 0.2f, 0.05f);
             
             attacker = GetComponentInChildren<Attacker>();
-            attacker.OnAttack += animationController.AttackAnimation;
+            attacker.OnAttack += show =>
+            {
+                animationController.AttackAnimation();
+            };
+
+            camera = ObjectProvider.Camera2D; 
+            horizontalDistance = camera.cameraBounds.x + 4;
+            verticalDistance = camera.cameraBounds.y + 4;
         }
 
-        public void Hit(int amount)
+        public void Hit(Projectile projectile)
         {
-            animationController.HitAnimation();
-            if (!hitPoints.Hit(amount))
+            if (dead)
             {
-                rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * 1.5f,
+                return;
+            }
+            spriteRenderer.DOColor(Color.red, 0.05f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
+            animationController.HitAnimation();
+            if (!hitPoints.Hit(projectile.Damage))
+            {
+                var target = ObjectProvider.PlayerCharacter.transform;
+                rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * projectile.KnockBackForce,
                     ForceMode2D.Impulse);
+                if (rigidBody.velocity.sqrMagnitude > projectile.KnockBackForce * projectile.KnockBackForce)
+                {
+                    rigidBody.velocity = rigidBody.velocity.normalized * projectile.KnockBackForce;
+                }
             }
         }
 
         private void AdjustRotation()
         {
+            var target = ObjectProvider.PlayerCharacter.transform;
             animationController.AdjustSpriteRotation(target.position.x - transform.position.x);
         }
 
         private void InitializeSteeringList()
         {
-            steeringList[0] = new SeekBehavior(1);
-            steeringList[1] = new ArriveBehavior(1);
+            // steeringList[0] = new SeekBehavior(1);
+            // steeringList[1] = new ArriveBehavior(1);
         }
 
         private void FixedUpdate()
@@ -78,16 +107,27 @@ namespace EnemyAI
             {
                 return;
             }
-            var acceleration = Vector2.zero;
-            foreach (var steering in steeringList)
-            {
-                var steeringData = steering.GetSteering(this);
-                acceleration += steeringData.linear * steering.GetWeight();
-            }
-            if (acceleration.magnitude > maxSpeed)
+
+            var target = ObjectProvider.PlayerCharacter.transform;
+            var acceleration = target.position - transform.position;
+            // foreach (var steering in steeringList)
+            // {
+            //     var steeringData = steering.GetSteering(this);
+            //     acceleration += steeringData.linear * steering.GetWeight();
+            // }
+            if (acceleration.sqrMagnitude > 3 * maxSpeed * maxSpeed)
             {
                 acceleration.Normalize();
                 acceleration *= maxSpeed;
+            }
+            else if (acceleration.sqrMagnitude > 0.25f)
+            {
+                acceleration.Normalize();
+                acceleration *= targetRadiusAcceleration;
+            }
+            else
+            {
+                acceleration = Vector2.zero;
             }
             rigidBody.AddForce(acceleration);
             if (rigidBody.velocity != Vector2.zero)
@@ -99,10 +139,10 @@ namespace EnemyAI
                 animationController.IdleAnimation();
             }
 
-            var targetPosition = target.position;
+            var targetPosition = camera.transform.position;
             var position = transform.position;
-            if (Mathf.Abs(targetPosition.x - position.x) > 15f ||
-                Mathf.Abs(targetPosition.y - position.y) > 9f)
+            if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
+                Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
             {
                 OnFaraway?.Invoke();
             }
@@ -110,15 +150,17 @@ namespace EnemyAI
 
         private void Die()
         {
+            attacker.canAttack = false;
             circleCollider2D.enabled = false;
             rigidBody.velocity = Vector2.zero;
-            dead = true;
-            transform.DOScale(Vector3.zero, 0.1f).OnComplete(() =>
-            {
-                transform.localScale = Vector3.one;
-                animationController.DieAnimation();
-                Invoke(nameof(DieInvoke), 0.15f);
-            });
+            DOTween.Sequence().SetDelay(0.1f)
+                .OnStepComplete(() =>
+                {
+                    dead = true;
+                    animationController.DieAnimation();
+                })
+                .Append(
+            transform.DOScale(Vector3.zero, 0.15f).OnComplete(DieInvoke));
         }
 
         private void DieInvoke()
@@ -128,6 +170,8 @@ namespace EnemyAI
 
         public void New()
         {
+            spriteRenderer.color = Color.white;
+            attacker.canAttack = true;
             transform.localScale = Vector3.one;
             dead = false;
             circleCollider2D.enabled = true;
@@ -138,7 +182,7 @@ namespace EnemyAI
 
         public void Free()
         {
-            transform.localScale = Vector3.one;
+            transform.position = Constants.Nan;
             gameObject.SetActive(false);
         }
     }

@@ -13,6 +13,7 @@ namespace StateMachine
         private List<PlayerState> states;
         protected PlayerState activeState;
         private PlayerController.CharacterController character; 
+        public bool active = true;
 
         protected virtual void Awake()
         {
@@ -22,21 +23,30 @@ namespace StateMachine
 
         public void SetState(Type newStateType)
         {
-            activeState?.Exit();
+            if (active)
+            {
+                activeState?.Exit();
 
-            activeState = states.First(s => s.GetType() == newStateType);
-            activeState.Init(character);
+                activeState = states.First(s => s.GetType() == newStateType);
+                activeState.Init(character);
+            }
         }
 
         private void Update()
         {
-            activeState.Update();
-            activeState.ChangeState();
+            if (active)
+            {
+                activeState.Update();
+                activeState.ChangeState();
+            }
         }
 
         private void FixedUpdate()
         {
-            activeState.FixedUpdate();
+            if (active)
+            {
+                activeState.FixedUpdate();
+            }
         }
     }
 }

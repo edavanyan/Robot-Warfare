@@ -1,4 +1,5 @@
 using System;
+using PlayerController;
 using UnityEngine;
 
 namespace EnemyAI
@@ -18,9 +19,9 @@ namespace EnemyAI
         private Transform target;
         public override SteeringData GetSteering(Enemy enemy)
         {
-            target = enemy.target;
+            target = ObjectProvider.PlayerCharacter.transform;
             var steering = new SteeringData();
-            var direction = (Vector2)(enemy.target.position - enemy.transform.position);
+            var direction = (Vector2)(target.position - enemy.transform.position);
             var distance = direction.magnitude;
             color = Color.green;
             if (distance < enemy.targetRadius)

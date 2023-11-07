@@ -5,7 +5,7 @@ namespace PlayerController
     public class XPoints
     {
         private int xp;
-        private int nextLevelXp = 5;
+        private int nextLevelXp = 1;
 
         public event Action<int> OnLevelUp;
 

@@ -1,3 +1,6 @@
+using Cinemachine;
+using DG.Tweening;
+using DG.Tweening.Core;
 using PlayerController;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,9 +22,11 @@ namespace Cameras
         private Vector2 mapBoundsMin = new Vector2(28.5f, 16f);
         public Vector2 CameraBoundsMax => cameraBounds + (Vector2)transform.position;
         public Vector2 CameraBoundsMin => (Vector2)transform.position - cameraBounds;
-        private Vector2 cameraBounds;
+        public Vector2 cameraBounds;
 
-        private void Start()
+        public CinemachineVirtualCamera VirtualCamera;
+
+        private void Awake()
         {
             var cellBounds = map.cellBounds;
             var boundsMax = map.CellToWorld(cellBounds.max);
@@ -36,7 +41,67 @@ namespace Cameras
             mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
             mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);
             
-            character = PlayerCharacterProvider.PlayerCharacter;
+            character = ObjectProvider.PlayerCharacter;
+
+            var stepTime = 2f;
+            var stepAmount = 2f;
+            // DOTween.Sequence()
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .AppendInterval(1)
+            //     .Append(
+            //         DOTween
+            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
+            //                 stepAmount, stepTime))
+            //     .SetEase(Ease.OutQuint)
+            //     .SetRelative(true);
         }
 
         private void Move(Vector2 position)
@@ -47,13 +112,6 @@ namespace Cameras
             // smoothPosition.y = Mathf.Clamp(smoothPosition.y, mapBoundsMin.y, mapBoundsMax.y);
             smoothPosition.z = -10f;
             transform.position = smoothPosition;
-        }
-
-        private void LateUpdate()
-        {
-            var direction = character.GetMoveDirection().normalized;
-            Move(character.transform.position);
-            moveDirection = Vector2.Lerp(moveDirection, direction, Time.deltaTime * cameraAcceleration);
         }
     }
 }

@@ -5,9 +5,6 @@ namespace Attack
 {
     public class Bullet : Projectile
     {
-        private Vector2 direction;
-        [SerializeField]
-        private new Rigidbody2D rigidbody;
         private TrailRenderer trail;
 
         private void Awake()
@@ -19,10 +16,7 @@ namespace Attack
         public override void Init(Transform target, Action<Transform, Projectile> hitCallback)
         {
             base.Init(target, hitCallback);
-            direction = target.position - transform.position;
-            direction.Normalize();
-            
-            rigidbody.AddForce(direction * speed, ForceMode2D.Impulse);
+            FireOnTarget(speed);
         }
 
         private void FixedUpdate()

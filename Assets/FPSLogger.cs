@@ -32,12 +32,13 @@ public class FPSLogger : MonoBehaviour
         {
             fps = framesCount;
             framesCount = 0;
-            time = 0;
         }
     }
 
     private void OnGUI()
     {
-        text.text = $"fps: {fps}";
+        int minutes = (int)(time / 60);
+        int seconds = (int)(time % 60);
+        text.text = $"{minutes}:{seconds}";
     }
 }

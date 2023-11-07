@@ -10,24 +10,26 @@ namespace Attack
     public class Attacker : MonoBehaviour
     {
         private SmoothCamera2D camera2D;
-        protected ComponentPool<Projectile> projectilePool;
+        protected ComponentPool<Projectile> ProjectilePool;
         public Projectile projectile;
-        public float damage;
+        public int damage;
         public float attackSpeed;
-        protected float inverseSpeed;
+        protected float InverseSpeed;
+        [SerializeField] private bool showAnimation;
+        [SerializeField] protected float knockBackForce = 1.5f;
         public float AttackSpeed
         {
             get => attackSpeed;
             set
             {
                 attackSpeed = value;
-                inverseSpeed = 1f / attackSpeed;
+                InverseSpeed = 1f / attackSpeed;
             }
         }
         public float attackRange;
         public LayerMask targetLayer;
-        protected bool canAttack = true;
-        public event Action OnAttack;
+        public bool canAttack = true;
+        public event Action<bool> OnAttack;
         private readonly List<Projectile> activeProjectiles = new();
 
         [SerializeField] private AttackType type;
@@ -35,8 +37,8 @@ namespace Attack
         private void Start()
         {
             camera2D = FindObjectOfType<SmoothCamera2D>();
-            projectilePool = new ComponentPool<Projectile>(projectile);
-            inverseSpeed = 1f / attackSpeed;
+            ProjectilePool = new ComponentPool<Projectile>(projectile);
+            InverseSpeed = 1f / attackSpeed;
             StartCoroutine(nameof(FindTargetAndAttack));
         }
 
@@ -48,7 +50,7 @@ namespace Attack
                 if (possibleTarget)
                 {
                     Attack(possibleTarget.transform);
-                    yield return new WaitForSeconds(inverseSpeed);
+                    yield return new WaitForSeconds(InverseSpeed);
                 }
 
                 yield return null;
@@ -58,11 +60,11 @@ namespace Attack
         // ReSharper disable once ParameterHidesMember
         protected void Attack(Transform target)
         {
-            var projToFire = projectilePool.NewItem();
+            var projToFire = ProjectilePool.NewItem();
             projToFire.transform.position = transform.position;
             projToFire.Init(target, OnHit);
             activeProjectiles.Add(projToFire);
-            OnAttack?.Invoke();
+            OnAttack?.Invoke(showAnimation);
         }
 
         // ReSharper disable once ParameterHidesMember
@@ -70,13 +72,24 @@ namespace Attack
         {
             if (hitTarget.gameObject.activeSelf)
             {
-                projectilePool.DestroyItem(projectile);
-                hitTarget.SendMessage(nameof(IHittable.Hit), damage);
-                tempForRemoveProj.Add(projectile);
+                projectile.Damage = damage;
+                projectile.KnockBackForce = knockBackForce;
+                hitTarget.parent.SendMessage(nameof(IHittable.Hit), projectile);
+                if (projectile.IsBroken)
+                {
+                    DestroyProjectile(projectile);
+                }
             }
         }
 
-        protected readonly List<Projectile> tempForRemoveProj = new();
+        // ReSharper disable once ParameterHidesMember
+        private void DestroyProjectile(Projectile projectile)
+        {
+            ProjectilePool.DestroyItem(projectile);
+            TempForRemoveProj.Add(projectile);
+        }
+
+        protected readonly List<Projectile> TempForRemoveProj = new();
         private void FixedUpdate()
         {
             if (type == AttackType.Ranged)
@@ -91,17 +104,21 @@ namespace Attack
                         projPosition.x < boundsMin.x ||
                         projPosition.y < boundsMin.y)
                     {
-                        tempForRemoveProj.Add(proj);
+                        TempForRemoveProj.Add(proj);
                     }
                 }
             }
 
-            foreach (var projToRemove in tempForRemoveProj)
+            foreach (var projToRemove in TempForRemoveProj)
             {
-                projectilePool.DestroyItem(projToRemove);
+                ProjectilePool.DestroyItem(projToRemove);
                 activeProjectiles.Remove(projToRemove);
             }
-            tempForRemoveProj.Clear();
+            TempForRemoveProj.Clear();
+        }
+
+        public virtual void OnLevelUp(int level)
+        {
         }
     }
 
