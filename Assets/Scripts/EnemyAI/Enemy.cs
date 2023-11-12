@@ -7,6 +7,7 @@ using PlayerController;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
+using Utils.Pool;
 using Sequence = DG.Tweening.Sequence;
 
 namespace EnemyAI
@@ -21,6 +22,7 @@ namespace EnemyAI
         public float drag = 1f;
         [SerializeField] private int maxHealth;
         public LootType LootType { get; set; }
+        public ComponentPool<Enemy> Pool { get; set; }
 
         [SerializeField] private Animator animator;
 
@@ -64,9 +66,9 @@ namespace EnemyAI
                 animationController.AttackAnimation();
             };
 
-            camera = ObjectProvider.Camera2D; 
-            horizontalDistance = camera.cameraBounds.x + 4;
-            verticalDistance = camera.cameraBounds.y + 4;
+            camera = API.Camera2D; 
+            horizontalDistance = camera.CameraBounds.x + 4;
+            verticalDistance = camera.CameraBounds.y + 4;
         }
 
         public void Hit(Projectile projectile)
@@ -79,7 +81,7 @@ namespace EnemyAI
             animationController.HitAnimation();
             if (!hitPoints.Hit(projectile.Damage))
             {
-                var target = ObjectProvider.PlayerCharacter.transform;
+                var target = API.PlayerCharacter.transform;
                 rigidBody.AddForce((rigidBody.position - (Vector2)target.transform.position).normalized * projectile.KnockBackForce,
                     ForceMode2D.Impulse);
                 if (rigidBody.velocity.sqrMagnitude > projectile.KnockBackForce * projectile.KnockBackForce)
@@ -91,7 +93,7 @@ namespace EnemyAI
 
         private void AdjustRotation()
         {
-            var target = ObjectProvider.PlayerCharacter.transform;
+            var target = API.PlayerCharacter.transform;
             animationController.AdjustSpriteRotation(target.position.x - transform.position.x);
         }
 
@@ -108,7 +110,7 @@ namespace EnemyAI
                 return;
             }
 
-            var target = ObjectProvider.PlayerCharacter.transform;
+            var target = API.PlayerCharacter.transform;
             var acceleration = target.position - transform.position;
             // foreach (var steering in steeringList)
             // {

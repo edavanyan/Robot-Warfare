@@ -1,117 +1,37 @@
+using System;
 using Cinemachine;
 using DG.Tweening;
-using DG.Tweening.Core;
 using PlayerController;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+
 
 namespace Cameras
 {
     public class SmoothCamera2D : MonoBehaviour
     {
-        public Camera mainCamera;
-
-        [SerializeField] private float smoothSpeed = 002f;
-        [SerializeField] private float offset;
         private Vector2 destination;
-        private PlayerController.CharacterController character;
-        [SerializeField] private float cameraAcceleration = 2f;
-        [SerializeField] private Tilemap map;
-        private Vector2 moveDirection = Vector2.zero;
-        private Vector2 mapBoundsMax = new Vector2(28.5f, 16f);
-        private Vector2 mapBoundsMin = new Vector2(28.5f, 16f);
-        public Vector2 CameraBoundsMax => cameraBounds + (Vector2)transform.position;
-        public Vector2 CameraBoundsMin => (Vector2)transform.position - cameraBounds;
-        public Vector2 cameraBounds;
+        public Vector2 CameraBoundsMax => CameraBounds + (Vector2)transform.position;
+        public Vector2 CameraBoundsMin => (Vector2)transform.position - CameraBounds;
 
-        public CinemachineVirtualCamera VirtualCamera;
+        public CinemachineVirtualCamera virtualCamera;
 
-        private void Awake()
+
+        public Vector2 CameraBounds
         {
-            var cellBounds = map.cellBounds;
-            var boundsMax = map.CellToWorld(cellBounds.max);
-            var boundsMin = map.CellToWorld(cellBounds.min);
-
-            // ReSharper disable once LocalVariableHidesMember
-            var camera = mainCamera;
-            var vertical = camera.orthographicSize;
-            var horizontal = vertical * camera.aspect;
-            cameraBounds = new Vector2(horizontal, vertical);
-
-            mapBoundsMax = new Vector2(boundsMax.x - horizontal, boundsMax.y - vertical);
-            mapBoundsMin = new Vector2(boundsMin.x + horizontal, boundsMin.y + vertical);
-            
-            character = ObjectProvider.PlayerCharacter;
-
-            var stepTime = 2f;
-            var stepAmount = 2f;
-            // DOTween.Sequence()
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .AppendInterval(1)
-            //     .Append(
-            //         DOTween
-            //             .To(() => VirtualCamera.m_Lens.OrthographicSize, x => VirtualCamera.m_Lens.OrthographicSize = x,
-            //                 stepAmount, stepTime))
-            //     .SetEase(Ease.OutQuint)
-            //     .SetRelative(true);
+            get
+            {
+                var vertical = virtualCamera.m_Lens.OrthographicSize;
+                var horizontal = vertical * virtualCamera.m_Lens.Aspect;
+                return new Vector2(horizontal, vertical);
+            }
         }
 
-        private void Move(Vector2 position)
+        private void Shake()
         {
-            destination = position + moveDirection * offset;
-            var smoothPosition = Vector3.Lerp(transform.position, destination, smoothSpeed * Time.deltaTime);
-            // smoothPosition.x = Mathf.Clamp(smoothPosition.x, mapBoundsMin.x, mapBoundsMax.x);
-            // smoothPosition.y = Mathf.Clamp(smoothPosition.y, mapBoundsMin.y, mapBoundsMax.y);
-            smoothPosition.z = -10f;
-            transform.position = smoothPosition;
+            virtualCamera.enabled = false;
+            transform
+                .DOShakePosition(0.05f, Vector3.one * 0.1f, 1, 0, false, false, ShakeRandomnessMode.Harmonic)
+                .OnComplete(() => virtualCamera.enabled = true);
         }
     }
 }

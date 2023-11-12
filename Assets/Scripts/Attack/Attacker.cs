@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cameras;
+using Manager;
 using UnityEngine;
 using Utils.Pool;
 
@@ -17,6 +18,7 @@ namespace Attack
         protected float InverseSpeed;
         [SerializeField] private bool showAnimation;
         [SerializeField] protected float knockBackForce = 1.5f;
+        [SerializeField] private float projectileHealth; 
         public float AttackSpeed
         {
             get => attackSpeed;
@@ -30,6 +32,7 @@ namespace Attack
         public LayerMask targetLayer;
         public bool canAttack = true;
         public event Action<bool> OnAttack;
+        public event Action OnHitEvent;
         private readonly List<Projectile> activeProjectiles = new();
 
         [SerializeField] private AttackType type;
@@ -60,7 +63,7 @@ namespace Attack
         // ReSharper disable once ParameterHidesMember
         protected void Attack(Transform target)
         {
-            var projToFire = ProjectilePool.NewItem();
+            var projToFire = CreateProjectile();
             projToFire.transform.position = transform.position;
             projToFire.Init(target, OnHit);
             activeProjectiles.Add(projToFire);
@@ -79,7 +82,15 @@ namespace Attack
                 {
                     DestroyProjectile(projectile);
                 }
+                OnHitEvent?.Invoke();
             }
+        }
+
+        protected Projectile CreateProjectile()
+        {
+            var item = ProjectilePool.NewItem();
+            item.health = (int)projectileHealth;
+            return item;
         }
 
         // ReSharper disable once ParameterHidesMember
@@ -119,6 +130,9 @@ namespace Attack
 
         public virtual void OnLevelUp(int level)
         {
+            damage += 1;
+            AttackSpeed += 0.02f;
+            projectileHealth += 0.1f;
         }
     }
 

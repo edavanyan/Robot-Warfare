@@ -31,7 +31,6 @@ namespace Manager
 
         private Loot CreateLoot(LootType type)
         {
-            print("create: " + type);
             return lootMapper[type].NewItem();
         }
 
@@ -52,7 +51,7 @@ namespace Manager
 
             loot.onCollected += () =>
             {
-                ObjectProvider.PlayerCharacter.LootCollected(loot);
+                API.PlayerCharacter.LootCollected(loot);
                 lootMapper[loot.lootType].DestroyItem(loot);
             };
         }

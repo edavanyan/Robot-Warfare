@@ -16,9 +16,9 @@ namespace Manager
         
         public int limit;
         public bool LimitExceeded => limit < activeEnemies.Count;
-        public Enemy enemyInstance;
+        public List<Enemy> enemyInstances;
         public LootManager lootManager;
-        private ComponentPool<Enemy> enemyPool;
+        private List<ComponentPool<Enemy>> enemyPools = new();
 
         private readonly List<Enemy> activeEnemies = new();
 
@@ -36,7 +36,11 @@ namespace Manager
         
         void Awake()
         {
-            enemyPool = new ComponentPool<Enemy>(enemyInstance);
+            foreach (var enemy in enemyInstances)
+            {
+                enemyPools.Add(new ComponentPool<Enemy>(enemy));
+            }
+
             foreach (var value in lootProbabilities.Values)
             {
                 sumOfProbs += value;
@@ -61,7 +65,9 @@ namespace Manager
                 return null;
             }
 
-            var enemy = enemyPool.NewItem();
+            var index = Random.Range(0, enemyPools.Count);
+            var enemy = enemyPools[index].NewItem();
+            enemy.Pool = enemyPools[index];
             activeEnemies.Add(enemy);
             enemy.transform.position = enemyPosition;
             enemy.OnFaraway += () =>
@@ -80,7 +86,6 @@ namespace Manager
                     if (currentLootType != LootType.Gold)
                     {
                         enemy.LootType = currentLootType;
-                        print(currentLootType);
                     }
                     else
                     {
@@ -97,7 +102,7 @@ namespace Manager
                         }
                     }
 
-                    if (killedEnemyCount < 5 || Random.value < 0.05f)
+                    if (killedEnemyCount < 5 || Random.value < 35f / activeEnemies.Count)
                     {
                         lootManager.DropLoot(enemy);
                     }
@@ -105,31 +110,6 @@ namespace Manager
                     DestroyEnemy(enemy);
                     
                     killedEnemyCount++;
-                    if (killedEnemyCount == 1)
-                    {
-                        CinematicManager.instance.SetToDropSword();
-                    } 
-                    else if (killedEnemyCount == 2)
-                    {
-                        CinematicManager.instance.SetToDropXp();
-                        CinematicManager.instance.CameraZoomOut(2);
-                        CinematicManager.instance.SetEnemyCountHuge();
-                    }
-                    else if (killedEnemyCount == 3)
-                    {
-                    }
-                    else if (killedEnemyCount == 25)
-                    {
-                        CinematicManager.instance.CameraZoomOut(2);
-                    }
-                    else if (killedEnemyCount == 180)
-                    {
-                        CinematicManager.instance.SetLuna();
-                    }
-                    else if (killedEnemyCount == 1200)
-                    {
-                        CinematicManager.instance.SetAlden();
-                    }
                 }
             };
             return enemy;
@@ -143,7 +123,7 @@ namespace Manager
         private void DestroyEnemy(Enemy enemy)
         {
             activeEnemies.Remove(enemy);
-            enemyPool.DestroyItem(enemy);
+            enemy.Pool.DestroyItem(enemy);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace EnemyAI
         
         public override SteeringData GetSteering(Enemy enemy)
         {
-            var target = ObjectProvider.PlayerCharacter.transform;
+            var target = API.PlayerCharacter.transform;
             var steering = new SteeringData
             {
                 linear = target.transform.position - enemy.transform.position

@@ -35,9 +35,9 @@ namespace Loots
             animator = GetComponent<Animator>();
             circleCollider2D = GetComponent<CircleCollider2D>();
             
-            camera = ObjectProvider.Camera2D; 
-            horizontalDistance = camera.cameraBounds.x + 2;
-            verticalDistance = camera.cameraBounds.y + 2;
+            camera = API.Camera2D; 
+            horizontalDistance = camera.CameraBounds.x + 2;
+            verticalDistance = camera.CameraBounds.y + 2;
         }
 
         private void Update()
@@ -93,7 +93,6 @@ namespace Loots
 
         void StartCollecting(Transform collector)
         {
-            print("start collecting: " + lootType);
             if (isCollecting) return;
             renderer.sortingLayerName = UILayer;
             circleCollider2D.enabled = false;

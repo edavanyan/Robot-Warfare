@@ -8,17 +8,15 @@ namespace PlayerController
 {
     public class SpawnPoints : MonoBehaviour
     {
-        private readonly List<Vector2> directions = new();
-        private Rect rect;
-
-        void Awake()
+        void Start()
         {
             var camera2D = transform.parent.GetComponent<SmoothCamera2D>();
+            print(camera2D.CameraBounds);
             var boundsMin = camera2D.CameraBoundsMin;
 
-            var cameraSize = new Vector2(camera2D.cameraBounds.x + 1f, camera2D.cameraBounds.y + 1f);
+            var cameraSize = new Vector2(camera2D.CameraBounds.x + 1f, camera2D.CameraBounds.y + 1f);
             var position = (Vector2)transform.position;
-            rect = new Rect(position - cameraSize, cameraSize * 2);
+            var rect = new Rect(position - cameraSize, cameraSize * 2);
             var rectPoints = new[]
             {
                 rect.min,

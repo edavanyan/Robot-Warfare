@@ -26,25 +26,24 @@ namespace Attack
             TempForRemoveProj.Add(projectile);
         }
         
-        //TODO cinematic staff
-        // protected override IEnumerator FindTargetAndAttack()
-        // {
-        //     while (canAttack)
-        //     {
-        //         var target = Physics2D.OverlapCircle(transform.position, 5f,targetLayer);
-        //         if (target)
-        //         {
-        //             Attack(target.transform);
-        //             yield return new WaitForSeconds(InverseSpeed);
-        //         }
-        //         yield return null;
-        //     }
-        // }
+        protected override IEnumerator FindTargetAndAttack()
+        {
+            while (canAttack)
+            {
+                var target = Physics2D.OverlapCircle(transform.position, 5f,targetLayer);
+                if (target)
+                {
+                    Attack(target.transform);
+                    yield return new WaitForSeconds(InverseSpeed);
+                }
+                yield return null;
+            }
+        }
 
         public override void OnLevelUp(int level)
         {
             base.OnLevelUp(level);
-            splashRadius += 0.1f;
+            splashRadius += 0.01f;
         }
     }
 }

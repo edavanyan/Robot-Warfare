@@ -15,14 +15,8 @@ namespace Attack
         protected string HitTag;
         public int Damage { get; set; }
         public float KnockBackForce { get; set; }
-        [FormerlySerializedAs("Health")] [SerializeField] protected int health;
-        public bool IsBroken => currentHealth <= 0;
-        private int currentHealth = 0;
-
-        private void Awake()
-        {
-            currentHealth = health;
-        }
+        public int health;
+        public bool IsBroken => health <= 0;
 
         // ReSharper disable once ParameterHidesMember
         public virtual void Init(Transform target, Action<Transform, Projectile> hitCallback)
@@ -42,7 +36,7 @@ namespace Attack
 
         protected void TargetHit(Collider2D other)
         {
-            currentHealth--;
+            health--;
             OnTargetHit?.Invoke(other.transform, this);
         }
 
@@ -58,7 +52,6 @@ namespace Attack
 
         public virtual void Free()
         {
-            currentHealth = health;
             OnTargetHit = null;
         }
     }

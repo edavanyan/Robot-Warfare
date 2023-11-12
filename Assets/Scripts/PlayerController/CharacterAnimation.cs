@@ -26,7 +26,7 @@ namespace PlayerController
             if (xInput != 0)
             {
                 var scale = transform.localScale;
-                transform.localScale = new Vector3(Mathf.Sign(xInput) * scale.y, scale.y, scale.z);
+                animator.transform.localScale = new Vector3(-Mathf.Sign(xInput) * scale.y, scale.y, scale.z);
             }
         }
         public void WalkingHorizontalAnimation()

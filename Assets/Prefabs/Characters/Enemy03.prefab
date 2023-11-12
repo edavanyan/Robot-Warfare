@@ -45,10 +45,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectile: {fileID: 7936001040826742282, guid: 076b4eeab1e114fa69df762efd08d867, type: 3}
-  damage: 10
-  attackSpeed: 2
+  damage: 5
+  attackSpeed: 1
   showAnimation: 0
   knockBackForce: 1.5
+  projectileHealth: 0
   attackRange: 0.5
   targetLayer:
     serializedVersion: 2
@@ -201,7 +202,7 @@ MonoBehaviour:
   targetRadiusAcceleration: 0.5
   maxSpeed: 1.5
   drag: 1
-  maxHealth: 10
+  maxHealth: 30
   animator: {fileID: 4125665773194304380}
   targetRadius: 0.1
   xpAmount: 0

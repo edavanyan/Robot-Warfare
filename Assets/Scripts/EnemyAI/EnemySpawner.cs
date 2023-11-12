@@ -6,6 +6,7 @@ using Cameras;
 using Grid;
 using Loots;
 using Manager;
+using PlayerController;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
@@ -33,12 +34,13 @@ namespace EnemyAI
             new() { OnX = false, OnY = true }
         };
         private int directionIndex = 0;
-        [FormerlySerializedAs("enemyFactory")] [SerializeField] private EnemyManager enemyManager;
+        private EnemyManager enemyManager;
         private int spawnCount;
 
 
         void Start()
         {
+            enemyManager = API.EnemyManager;
             if (spawnRate > 0)
             {
                 InvokeRepeating(nameof(SpawnAtArea), delay, spawnRate);
@@ -88,8 +90,8 @@ namespace EnemyAI
 
         void SpawnAtPosition(int count)
         {
-            var spawnCount = count > 0 ? count : Random.Range(3, 10);
-            for (var i = 0; i < spawnCount; i++)
+            var range = count > 0 ? count : Random.Range(3, 10);
+            for (var i = 0; i < range; i++)
             {
                 enemyManager.CreateEnemy(transform.position);
             }

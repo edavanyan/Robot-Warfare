@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Attack;
 using DG.Tweening;
@@ -28,6 +29,8 @@ namespace PlayerController
         private XPoints xPoints;
 
         private SpriteRenderer spriteRenderer;
+        public event Action OnAttack;
+        public event Action<int> OnLevelUp;
 
         protected override void Awake()
         {
@@ -37,7 +40,12 @@ namespace PlayerController
             };
             foreach (var attacker in attackers)
             {
-                xPoints.OnLevelUp += attacker.OnLevelUp;
+                xPoints.OnLevelUp += level =>
+                {
+                    attacker.OnLevelUp(level);
+                    OnLevelUp?.Invoke(level);
+                    hitPoints.IncreaseMaxHp(4);
+                };
                 attacker.OnAttack += (showAnim) =>
                 {
                     if (showAnim)
@@ -45,22 +53,14 @@ namespace PlayerController
                         CharacterAnimation.AttackAnimation();
                     }
                 };
+                attacker.OnHitEvent += () => OnAttack?.Invoke();
             }
-            //todo for cinematic
-            xPoints.OnLevelUp += level =>
-            {
-                if (level == 2 && gameObject.name == "Verdan")
-                {
-                    transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
-                    spriteRenderer.DOColor(Color.cyan, 0.05f).SetLoops(6, LoopType.Yoyo).SetEase(Ease.OutSine);
-                }
-            };
 
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () => Debug.Log("Player Die");
 
-            // hpBar = FindObjectOfType<HpBar>();
-            // hpBar.MaxValue = hpBar.Value = maxHealth;
+            hpBar = FindObjectOfType<HpBar>();
+            hpBar.MaxValue = hpBar.Value = maxHealth;
             
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             CharacterAnimation = new CharacterAnimation(animator, transform);
@@ -80,11 +80,6 @@ namespace PlayerController
             return activeState.GetPlayerMoveDirection();
         }
 
-        public void RemoveStates()
-        {
-            
-        }
-
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.magenta;
@@ -93,17 +88,17 @@ namespace PlayerController
 
         public void Hit(Projectile projectile)
         {
-            // spriteRenderer.DOComplete();
-            // spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
-            // CharacterAnimation.HitAnimation();
+            spriteRenderer.DOComplete();
+            spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
+            CharacterAnimation.HitAnimation();
             hitPoints.Hit(projectile.Damage);
-            // hpBar.Change(projectile.Damage);
+            hpBar.Change(projectile.Damage);
         }
 
         private void LateUpdate()
         {
             var transform1 = transform;
-            // hpBar.transform.position = transform1.position + barOffset;
+            hpBar.transform.position = transform1.position + barOffset;
             
             var scale = transform1.localScale;
             directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
@@ -125,12 +120,6 @@ namespace PlayerController
             if (loot.lootType == LootType.Xp)
             {
                 xPoints.Xp += loot.amount;
-            }
-            else if (loot.lootType == LootType.Sword)
-            {
-                //TODO this is just for cinematic replace this code
-                attackers[0].gameObject.SetActive(true);
-                attackers[1].gameObject.SetActive(false);
             }
         }
     }

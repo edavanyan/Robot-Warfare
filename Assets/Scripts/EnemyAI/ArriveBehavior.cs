@@ -19,7 +19,7 @@ namespace EnemyAI
         private Transform target;
         public override SteeringData GetSteering(Enemy enemy)
         {
-            target = ObjectProvider.PlayerCharacter.transform;
+            target = API.PlayerCharacter.transform;
             var steering = new SteeringData();
             var direction = (Vector2)(target.position - enemy.transform.position);
             var distance = direction.magnitude;

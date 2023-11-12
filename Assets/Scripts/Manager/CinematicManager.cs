@@ -94,7 +94,7 @@ namespace Manager
                 Luna.transform.position = camera.Follow.position;
                 camera.Follow = Luna.transform;
                 camera.Follow.gameObject.SetActive(true);
-                ObjectProvider.SetCharacter(Luna);
+                API.SetCharacter(Luna);
                 Verdan.transform.position = verdanPosition.position;
                 Verdan.transform.localScale = new Vector3(1, 1, 1);
             });
@@ -109,7 +109,7 @@ namespace Manager
                 Alden.transform.position = camera.Follow.position;
                 camera.Follow = Alden.transform;
                 camera.Follow.gameObject.SetActive(true);
-                ObjectProvider.SetCharacter(Alden);
+                API.SetCharacter(Alden);
                 Luna.transform.position = lunaPosition.position;
                 Luna.transform.localScale = new Vector3(-1, 1, 1);
             });
