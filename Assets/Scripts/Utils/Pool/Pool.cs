@@ -33,10 +33,10 @@ namespace Utils.Pool
 
         public void DestroyItem(T item)
         {
-            if (freeItemList.Contains(item))
-            {
-                return;
-            }
+            // if (freeItemList.Contains(item))
+            // {
+            //     return;
+            // }
             freeItemList.Add(item);
             item.Free();
         }

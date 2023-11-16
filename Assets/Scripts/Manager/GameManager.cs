@@ -39,8 +39,8 @@ namespace Manager
         
             if (currentTime > interval)
             {
-                interval += 30;
-                enemyManager.limit = Math.Clamp(enemyManager.limit * 2, 0, 700);
+                // interval += 30;
+                // enemyManager.limit = Math.Clamp(enemyManager.limit * 2, 0, 700);
             }
         }
     }

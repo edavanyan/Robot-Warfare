@@ -39,5 +39,11 @@ namespace Attack
                 yield return null;
             }
         }
+
+        public override void OnLevelUp(int level)
+        {
+            projectileHealth += 0.1f;
+            base.OnLevelUp(level);
+        }
     }
 }

@@ -64,6 +64,7 @@ namespace Attack
                             Quaternion.Euler(0, 0, 30 * scaleX),
                             scaleTime))
                     .Join(weapon.transform.DOScaleY(0.2f, scaleTime * 2f)).Duration();
+                
                 yield return new WaitForSeconds(InverseSpeed + duration);
             }
         }

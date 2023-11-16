@@ -40,26 +40,26 @@ namespace Loots
             verticalDistance = camera.CameraBounds.y + 2;
         }
 
-        private void Update()
-        {
-            var targetPosition = camera.transform.position;
-            var position = transform.position;
-            if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
-                Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
-            {
-                if (isEnabled)
-                {
-                    Disable();
-                }
-            }
-            else
-            {
-                if (!isEnabled)
-                {
-                    Enable();
-                }
-            }
-        }
+        // private void Update()
+        // {
+        //     var targetPosition = camera.transform.position;
+        //     var position = transform.position;
+        //     if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
+        //         Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
+        //     {
+        //         if (isEnabled)
+        //         {
+        //             Disable();
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (!isEnabled)
+        //         {
+        //             Enable();
+        //         }
+        //     }
+        // }
 
         private void Enable()
         {

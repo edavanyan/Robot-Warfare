@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Cameras;
 using Cinemachine;
 using Manager;
-using UI.Menu;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -18,11 +17,13 @@ namespace PlayerController
         public static Volume GlobalVolume => instance.globalVolume;
         public static Light2D GlobalLight => instance.light2d;
         public static CinemachineVirtualCamera VirtualCamera => instance.virtualCamera;
+        public static UIManager UIManager => instance.uiManager;
 
         private CharacterController playerCharacter;
         private SmoothCamera2D camera2D;
         private Volume globalVolume;
         private CinemachineVirtualCamera virtualCamera;
+        private UIManager uiManager;
         [SerializeField]private Light2D light2d;
         private EnemyManager enemyManager;
         
@@ -43,6 +44,7 @@ namespace PlayerController
                 enemyManager = FindObjectOfType<EnemyManager>();
                 globalVolume = FindObjectOfType<Volume>();
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+                uiManager = FindObjectOfType<UIManager>();
             }
             else
             {
@@ -52,7 +54,7 @@ namespace PlayerController
 
         private void SpawnMainCharacter()
         {
-            CharacterName ??= "Verdan";
+            CharacterName ??= "Luna";
             foreach (var character in characters)
             {
                 if (character.name == CharacterName)

@@ -34,6 +34,7 @@ namespace EnemyAI
         private HitPoints hitPoints;
         public event Action OnFaraway;
         public event Action OnDie;
+        public event Action<int> OnHit;
 
         private bool dead;
 
@@ -89,6 +90,7 @@ namespace EnemyAI
                     rigidBody.velocity = rigidBody.velocity.normalized * projectile.KnockBackForce;
                 }
             }
+            OnHit?.Invoke(projectile.Damage);
         }
 
         private void AdjustRotation()
@@ -184,6 +186,7 @@ namespace EnemyAI
 
         public void Free()
         {
+            OnHit = null;
             transform.position = Constants.Nan;
             gameObject.SetActive(false);
         }

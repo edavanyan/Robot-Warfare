@@ -202,7 +202,7 @@ MonoBehaviour:
   targetRadiusAcceleration: 0.5
   maxSpeed: 1.5
   drag: 1
-  maxHealth: 30
+  maxHealth: 10
   animator: {fileID: 4125665773194304380}
   targetRadius: 0.1
   xpAmount: 0
@@ -281,7 +281,7 @@ SpriteRenderer:
   m_SortingLayerID: -641436669
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1742222792, guid: 49f8c0f058a404376a441f1bacc4ab45, type: 3}
+  m_Sprite: {fileID: -938012243, guid: f820f6fffcb29446fa5621da853c0fd4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using EnemyAI;
@@ -17,6 +18,7 @@ namespace Manager
         private ComponentPool<Loot> blueLootPool;
         private ComponentPool<Loot> swordLootPool;
         private Dictionary<LootType, ComponentPool<Loot>> lootMapper;
+        private readonly List<Loot> activeLoots = new();
 
         private void Awake()
         {
@@ -34,10 +36,23 @@ namespace Manager
             return lootMapper[type].NewItem();
         }
 
+        private void DestroyLoot(Loot loot)
+        {
+            
+            activeLoots.Remove(loot);
+            lootMapper[loot.lootType].DestroyItem(loot);
+            
+        }
+
         public void DropLoot(Enemy enemy)
         {
+            if (activeLoots.Count >= 800)
+            {
+                DestroyLoot(activeLoots[^1]);
+            }
             var loot = CreateLoot(enemy.LootType);
             loot.Set(enemy.LootType, 1);
+            activeLoots.Add(loot);
             
             loot.transform.position = enemy.transform.position;
             if (loot.lootType == LootType.Sword)
@@ -52,7 +67,7 @@ namespace Manager
             loot.onCollected += () =>
             {
                 API.PlayerCharacter.LootCollected(loot);
-                lootMapper[loot.lootType].DestroyItem(loot);
+                DestroyLoot(loot);
             };
         }
     }

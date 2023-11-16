@@ -18,7 +18,7 @@ namespace Attack
         protected float InverseSpeed;
         [SerializeField] private bool showAnimation;
         [SerializeField] protected float knockBackForce = 1.5f;
-        [SerializeField] private float projectileHealth; 
+        [SerializeField] protected float projectileHealth; 
         public float AttackSpeed
         {
             get => attackSpeed;
@@ -132,7 +132,6 @@ namespace Attack
         {
             damage += 1;
             AttackSpeed += 0.02f;
-            projectileHealth += 0.1f;
         }
     }
 
