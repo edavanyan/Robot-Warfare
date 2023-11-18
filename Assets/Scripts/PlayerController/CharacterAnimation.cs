@@ -74,7 +74,7 @@ namespace PlayerController
 
         public void HitAnimation()
         {
-            animator.SetTrigger(IsHit);
+            // animator.SetTrigger(IsHit);
         }
 
         public void PreviousAnimation()

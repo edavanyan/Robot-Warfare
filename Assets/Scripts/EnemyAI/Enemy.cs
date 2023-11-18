@@ -32,9 +32,9 @@ namespace EnemyAI
         private EnemyAnimation animationController;
 
         private HitPoints hitPoints;
-        public event Action OnFaraway;
-        public event Action OnDie;
-        public event Action<int> OnHit;
+        private event Action OnFaraway;
+        private event Action OnDie;
+        private event Action<int> OnHit;
 
         private bool dead;
 
@@ -47,19 +47,22 @@ namespace EnemyAI
 
         public int xpAmount;
 
-
+        private static int awakeCount;
+        
         private void Awake()
         {
             circleCollider2D = GetComponentInChildren<CircleCollider2D>();
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             animationController = new EnemyAnimation(animator, transform);
             hitPoints = new HitPoints(maxHealth);
+            hitPoints.OnDie += Die;
+            print(awakeCount++);
             
             rigidBody = GetComponent<Rigidbody2D>();
             
             InitializeSteeringList();
             
-            InvokeRepeating(nameof(AdjustRotation), 0.2f, 0.05f);
+            InvokeRepeating(nameof(AdjustRotation), 0.2f, 0.2f);
             
             attacker = GetComponentInChildren<Attacker>();
             attacker.OnAttack += show =>
@@ -105,7 +108,7 @@ namespace EnemyAI
             // steeringList[1] = new ArriveBehavior(1);
         }
 
-        private void FixedUpdate()
+        public void Act()
         {
             if (dead)
             {
@@ -113,7 +116,8 @@ namespace EnemyAI
             }
 
             var target = API.PlayerCharacter.transform;
-            var acceleration = target.position - transform.position;
+            var selfTransform = transform;
+            var acceleration = target.position - selfTransform.position;
             // foreach (var steering in steeringList)
             // {
             //     var steeringData = steering.GetSteering(this);
@@ -134,17 +138,17 @@ namespace EnemyAI
                 acceleration = Vector2.zero;
             }
             rigidBody.AddForce(acceleration);
-            if (rigidBody.velocity != Vector2.zero)
-            {
-                animationController.WalkingAnimation();
-            }
-            else
-            {
-                animationController.IdleAnimation();
-            }
+            // if (rigidBody.velocity != Vector2.zero)
+            // {
+            //     animationController.WalkingAnimation();
+            // }
+            // else
+            // {
+            //     animationController.IdleAnimation();
+            // }
 
             var targetPosition = camera.transform.position;
-            var position = transform.position;
+            var position = selfTransform.position;
             if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
                 Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
             {
@@ -172,6 +176,35 @@ namespace EnemyAI
             OnDie?.Invoke();
         }
 
+        public bool OnHitSubscribed()
+        {
+            return OnHit != null;
+        }
+
+        public void SubscribeOnHit(Action<int> onHit)
+        {
+            OnHit += onHit;
+        }
+
+        public bool OnDieSubscribed()
+        {
+            return OnDie != null;
+        }
+
+        public void SubscribeOnDie(Action onDie)
+        {
+            OnDie += onDie;
+        }
+
+        public bool OnFarAwaySubscribed()
+        {
+            return OnFaraway != null;
+        }
+        public void SubscribeOnFarAway(Action onFarAway)
+        {
+            OnFaraway += onFarAway;
+        }
+
         public void New()
         {
             spriteRenderer.color = Color.white;
@@ -180,13 +213,11 @@ namespace EnemyAI
             dead = false;
             circleCollider2D.enabled = true;
             gameObject.SetActive(true);
-            hitPoints.OnDie += Die;
             hitPoints.Reset();
         }
 
         public void Free()
         {
-            OnHit = null;
             transform.position = Constants.Nan;
             gameObject.SetActive(false);
         }

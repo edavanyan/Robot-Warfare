@@ -1,4 +1,5 @@
 using DG.Tweening;
+using DG.Tweening.Core;
 using UnityEngine;
 
 namespace EnemyAI
@@ -21,12 +22,15 @@ namespace EnemyAI
             this.animator = animator;
             this.transform = transform;
         }
-        
+
+        private static int k = 0;
+        private Tweener cachedScaleTween = DOTween.To(() => k, t => k = t, 1, 0);
         public void AdjustSpriteRotation(float x)
         {
             if (x != 0)
             {
-                transform.DOScaleX(Mathf.Sign(x), 0.05f);
+                cachedScaleTween.Kill(true);
+                cachedScaleTween = transform.DOScaleX(Mathf.Sign(x), 0.05f);
             }
         }
         

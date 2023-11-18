@@ -3,6 +3,7 @@ using GameInput;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.OnScreen;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 namespace UI
@@ -11,6 +12,7 @@ namespace UI
     {
         [SerializeField] private Canvas canvas;
         private Vector2 mousePosition;
+        [SerializeField] private OnScreenStick onScreenStick;
 
         private void Awake()
         {
@@ -26,16 +28,15 @@ namespace UI
                     var viewportPosition = new Vector3(mousePosition.x / Screen.width,
                         mousePosition.y / Screen.height,
                         0);
-
+            
                     var rectTransform = (RectTransform)transform;
                     var centerBasedViewPortPosition = viewportPosition - new Vector3(0.5f, 0.5f, 0);
                     var scale = canvasRect.sizeDelta;
                     rectTransform.anchoredPosition = Vector3.Scale(centerBasedViewPortPosition, scale);
                 }
-                else if (touch.phase == TouchPhase.Ended ||
-                         touch.phase == TouchPhase.Canceled)
+                else if (touch.phase == TouchPhase.Ended)
                 {
-                    gameObject.SetActive(false);
+                    // gameObject.SetActive(false);
                 }
             };
         }

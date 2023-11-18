@@ -31,7 +31,6 @@ namespace Attack
             {
                 CurrentHitPoints = 0;
                 OnDie?.Invoke();
-                OnDie = null;
                 return true;
             }
 

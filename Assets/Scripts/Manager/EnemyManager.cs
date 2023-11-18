@@ -77,70 +77,90 @@ namespace Manager
             enemy.Pool = enemyPools[index];
             activeEnemies.Add(enemy);
             enemy.transform.position = enemyPosition;
-            enemy.OnFaraway += () =>
+            if (!enemy.OnFarAwaySubscribed())
             {
-                if (activeEnemies.Count >= 30 &&
-                    activeEnemies.Contains(enemy))
+                enemy.SubscribeOnFarAway(() =>
                 {
-                    DestroyEnemy(enemy);
-                }
-            };
-            enemy.OnHit += number =>
-            {
-                var floatingNumber = floatingNumberPool.NewItem();
-                floatingNumber.transform.parent = API.UIManager.transform;
-                floatingNumber.Number = number;
-                
-                var position = enemy.transform.position;
-                floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
-                DOTween.Sequence()
-                    .Append(floatingNumber.RectTransform.DOScale(Vector3.one, 0.05f))
-                    .Join(DOTween.To(() => position, pos => position = pos, new Vector3(0, 0.5f, 0), 0.4f).SetRelative(true))
-                    .Append(floatingNumber.RectTransform.DOScale(Vector3.zero, 0.1f))
-                    .OnUpdate(() =>
+                    if (activeEnemies.Count >= 30 &&
+                        activeEnemies.Contains(enemy))
                     {
-                        floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
-                    })
-                    .AppendCallback(() =>
-                    {
-                        floatingNumberPool.DestroyItem(floatingNumber);
-                    });
-            };
-            enemy.OnDie += () =>
-            {
-                if (activeEnemies.Contains(enemy))
-                {
-                    
-                    if (currentLootType != LootType.Gold)
-                    {
-                        enemy.LootType = currentLootType;
+                        DestroyEnemy(enemy);
                     }
-                    else
-                    {
-                        var prob = Random.Range(0f, sumOfProbs);
-                        var currentCursor = 0f;
-                        foreach (var probability in lootProbabilities)
+                });
+            }
+
+            if (!enemy.OnHitSubscribed())
+            {
+                enemy.SubscribeOnHit(number =>
+                {
+                    var floatingNumber = floatingNumberPool.NewItem();
+                    floatingNumber.transform.SetParent(API.UIManager.transform);
+                    floatingNumber.Number = number;
+                    
+                    var position = enemy.transform.position;
+                    floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
+                    DOTween.Sequence()
+                        .Append(floatingNumber.RectTransform.DOScale(Vector3.one, 0.05f))
+                        .Join(DOTween.To(() => position, pos => position = pos, new Vector3(0, 0.5f, 0), 0.4f).SetRelative(true))
+                        .Append(floatingNumber.RectTransform.DOScale(Vector3.zero, 0.1f))
+                        .OnUpdate(() =>
                         {
-                            currentCursor += probability.Value;
-                            if (prob < currentCursor)
+                            floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
+                        })
+                        .AppendCallback(() =>
+                        {
+                            floatingNumberPool.DestroyItem(floatingNumber);
+                        });
+                });
+            }
+
+            if (!enemy.OnDieSubscribed())
+            {
+                enemy.SubscribeOnDie(() =>
+                {
+                    if (activeEnemies.Contains(enemy))
+                    {
+
+                        if (currentLootType != LootType.Gold)
+                        {
+                            enemy.LootType = currentLootType;
+                        }
+                        else
+                        {
+                            var prob = Random.Range(0f, sumOfProbs);
+                            var currentCursor = 0f;
+                            foreach (var probability in lootProbabilities)
                             {
-                                enemy.LootType = probability.Key;
-                                break;
+                                currentCursor += probability.Value;
+                                if (prob < currentCursor)
+                                {
+                                    enemy.LootType = probability.Key;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (Random.value < 35f / activeEnemies.Count)
-                    {
+                        // if (Random.value < 35f / activeEnemies.Count)
+                        // {
                         lootManager.DropLoot(enemy);
-                    }
+                        // }
 
-                    DestroyEnemy(enemy);
-                    
-                    killedEnemyCount++;
-                }
-            };
+                        DestroyEnemy(enemy);
+
+                        killedEnemyCount++;
+                    }
+                });
+            }
+
             return enemy;
+        }
+
+        private void FixedUpdate()
+        {
+            for (var i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].Act();
+            }
         }
 
         private void OnGUI()

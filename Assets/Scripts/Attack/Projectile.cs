@@ -54,5 +54,7 @@ namespace Attack
         {
             OnTargetHit = null;
         }
+
+        public abstract void Act();
     }
 }

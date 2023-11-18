@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cameras;
-using Manager;
 using UnityEngine;
 using Utils.Pool;
 
@@ -18,7 +17,7 @@ namespace Attack
         protected float InverseSpeed;
         [SerializeField] private bool showAnimation;
         [SerializeField] protected float knockBackForce = 1.5f;
-        [SerializeField] protected float projectileHealth; 
+        [SerializeField] protected float projectileHealth;
         public float AttackSpeed
         {
             get => attackSpeed;
@@ -116,6 +115,10 @@ namespace Attack
                         projPosition.y < boundsMin.y)
                     {
                         TempForRemoveProj.Add(proj);
+                    }
+                    else
+                    {
+                        proj.Act();
                     }
                 }
             }

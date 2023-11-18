@@ -14,5 +14,10 @@ namespace Attack
         public override void New()
         {
         }
+
+        public override void Act()
+        {
+            
+        }
     }
 }

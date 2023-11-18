@@ -1,5 +1,6 @@
 using System;
 using Cinemachine;
+using DG.Tweening;
 using PlayerController;
 using TMPro;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Manager
             enemyManager = API.EnemyManager;
 
             API.PlayerCharacter.OnLevelUp += level => levelText.text = $"{level}";
+
+            DOTween.SetTweensCapacity(5000, 500);
         }
 
         void Update()

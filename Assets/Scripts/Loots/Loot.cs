@@ -107,6 +107,7 @@ namespace Loots
         {
             isCollecting = false;
             onCollected?.Invoke();
+            onCollected = null;
         }
 
         public void New()

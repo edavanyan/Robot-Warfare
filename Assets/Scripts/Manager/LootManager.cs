@@ -19,6 +19,7 @@ namespace Manager
         private ComponentPool<Loot> swordLootPool;
         private Dictionary<LootType, ComponentPool<Loot>> lootMapper;
         private readonly List<Loot> activeLoots = new();
+        private int lootQueueIndex = 0;
 
         private void Awake()
         {
@@ -46,14 +47,24 @@ namespace Manager
 
         public void DropLoot(Enemy enemy)
         {
-            if (activeLoots.Count >= 800)
+            Loot loot;
+            if (activeLoots.Count < 800)
             {
-                DestroyLoot(activeLoots[^1]);
+                loot = CreateLoot(enemy.LootType);
+                loot.Set(enemy.LootType, 1);
+                activeLoots.Add(loot);
             }
-            var loot = CreateLoot(enemy.LootType);
-            loot.Set(enemy.LootType, 1);
-            activeLoots.Add(loot);
-            
+            else
+            {
+                lootQueueIndex++;
+                if (lootQueueIndex >= activeLoots.Count)
+                {
+                    lootQueueIndex = 0;
+                }
+
+                loot = activeLoots[lootQueueIndex];
+            }
+
             loot.transform.position = enemy.transform.position;
             if (loot.lootType == LootType.Sword)
             {

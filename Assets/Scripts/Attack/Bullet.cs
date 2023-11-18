@@ -19,7 +19,7 @@ namespace Attack
             FireOnTarget(speed);
         }
 
-        private void FixedUpdate()
+        public override void Act()
         {
             var velocity = rigidbody.velocity;
             rigidbody.rotation = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg - 45f;

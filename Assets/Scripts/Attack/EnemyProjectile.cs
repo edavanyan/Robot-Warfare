@@ -10,7 +10,7 @@ namespace Attack
 
         private SpriteRenderer spriteRenderer;
         public Vector2 Direction { set; private get; }
-        public event Action<EnemyProjectile> OnComplete; 
+        public event Action<EnemyProjectile> OnComplete;
 
         private void Awake()
         {
@@ -26,6 +26,11 @@ namespace Attack
         {
             print("free");
             CompleteDestroy();
+        }
+
+        public override void Act()
+        {
+            throw new NotImplementedException();
         }
 
         private void CompleteDestroy()
