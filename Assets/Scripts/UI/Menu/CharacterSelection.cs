@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace UI.Menu
 {
     public class CharacterSelection : MonoBehaviour
     {
         [SerializeField] private List<CharacterItem> characters;
+        [SerializeField] private List<Image> previews;
         private int selectedIndex = 0;
 
         private void Start()
@@ -33,8 +35,10 @@ namespace UI.Menu
         public void SelectCharacter(CharacterItem characterItem)
         {
             characters[selectedIndex].DeselectedView();
+            previews[selectedIndex].gameObject.SetActive(false);
             selectedIndex = characters.IndexOf(characterItem);
             characters[selectedIndex].SelectedView();
+            previews[selectedIndex].gameObject.SetActive(true);
         }
 
         public CharacterItem SelectedCharacter()

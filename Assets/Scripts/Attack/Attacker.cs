@@ -37,6 +37,10 @@ namespace Attack
         private readonly List<Projectile> activeProjectiles = new();
         public AttackType type;
 
+        [SerializeField] private float damagePerLevel;
+        [SerializeField] private float attackSpeedPerLevel;
+        [SerializeField] private float projectileHealthPerLevel;
+
         private void Start()
         {
             camera2D = FindObjectOfType<SmoothCamera2D>();
@@ -134,6 +138,9 @@ namespace Attack
 
         public virtual void OnLevelUp(int level)
         {
+            damage += damagePerLevel;
+            AttackSpeed += attackSpeedPerLevel;
+            projectileHealth += projectileHealthPerLevel;
         }
 
         public virtual void Upgrade()

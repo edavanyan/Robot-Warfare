@@ -539,6 +539,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9206766131830080976, guid: 1db19cb49b03444a081f376d8ee466f0, type: 3}
+      propertyPath: damagePerLevel
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9206766131830080976, guid: 1db19cb49b03444a081f376d8ee466f0, type: 3}
+      propertyPath: attackSpeedPerLevel
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1579,22 +1587,6 @@ PrefabInstance:
     - target: {fileID: 4001223735100796053, guid: 72657d9b6755d41ee8bacb383edc2510, type: 3}
       propertyPath: m_Name
       value: Luna
-      objectReference: {fileID: 0}
-    - target: {fileID: 4001223735100796053, guid: 72657d9b6755d41ee8bacb383edc2510, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7761091393379147994, guid: 72657d9b6755d41ee8bacb383edc2510, type: 3}
-      propertyPath: maxLevel
-      value: 36
-      objectReference: {fileID: 0}
-    - target: {fileID: 7761091393379147994, guid: 72657d9b6755d41ee8bacb383edc2510, type: 3}
-      propertyPath: attackRange
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7761091393379147994, guid: 72657d9b6755d41ee8bacb383edc2510, type: 3}
-      propertyPath: attackSpeed
-      value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3628,6 +3620,22 @@ PrefabInstance:
     - target: {fileID: 3408866147994963555, guid: 1254a1d3390a34d5d9718953f4d5c85b, type: 3}
       propertyPath: m_Name
       value: Alden
+      objectReference: {fileID: 0}
+    - target: {fileID: 3408866147994963555, guid: 1254a1d3390a34d5d9718953f4d5c85b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6567083956710419841, guid: 1254a1d3390a34d5d9718953f4d5c85b, type: 3}
+      propertyPath: damagePerLevel
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6567083956710419841, guid: 1254a1d3390a34d5d9718953f4d5c85b, type: 3}
+      propertyPath: attackSpeedPerLevel
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 6567083956710419841, guid: 1254a1d3390a34d5d9718953f4d5c85b, type: 3}
+      propertyPath: splashRadiusPerLevel
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -124,13 +124,12 @@ namespace Manager
 
         public void CollectAll()
         {
-            foreach (var loot in lootListMapper[LootType.Xp])
+            foreach (var lootEntry in lootListMapper)
             {
-                loot.MoveToPlayer();
-            }
-            foreach (var loot in lootListMapper[LootType.Projectile])
-            {
-                loot.MoveToPlayer();
+                for (var i = 0; i < lootEntry.Value.Count; i++)
+                {
+                    lootEntry.Value[i].MoveToPlayer();
+                }
             }
         }
     }

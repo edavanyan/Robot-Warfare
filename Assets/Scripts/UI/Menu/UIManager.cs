@@ -1,17 +1,58 @@
+using DG.Tweening;
 using PlayerController;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UI.Menu
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField]private CharacterSelection characterSelection;
+        [SerializeField] private CharacterSelection characterSelection;
+        [SerializeField] private Image backButton;
+        [SerializeField] private Image background;
+        private State state = State.Menu;
         
         public void OnPlayButtonPress()
         {
-            API.CharacterName = characterSelection.SelectedCharacter().name;
-            SceneManager.LoadScene("Siege");
+            if (state == State.HeroSelection)
+            {
+                API.CharacterName = characterSelection.SelectedCharacter().name;
+                SceneManager.LoadScene("Siege");
+            }
+            else
+            {
+                TransitionToHeroSelection();
+            }
+        }
+
+        public void OnBackButtonPress()
+        {
+            TransitionToMainMenu();
+        }
+
+        public void TransitionToHeroSelection()
+        {
+            backButton.gameObject.SetActive(true);
+            background.DOFade(0.025f, 0.3f).OnComplete(() =>
+            {
+                characterSelection.gameObject.SetActive(true);
+            });
+            state = State.HeroSelection;
+        }
+
+        public void TransitionToMainMenu()
+        {
+            backButton.gameObject.SetActive(false);
+            characterSelection.gameObject.SetActive(false);
+            background.DOFade(1f, 0.3f);
+            state = State.Menu;
+        }
+
+        private enum State
+        {
+            Menu,
+            HeroSelection
         }
     }
 }

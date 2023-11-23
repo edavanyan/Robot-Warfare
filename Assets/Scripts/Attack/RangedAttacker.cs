@@ -57,12 +57,5 @@ namespace Attack
                 yield return null;
             }
         }
-
-        public override void OnLevelUp(int level)
-        {
-            damage += 1;
-            AttackSpeed += 0.075f;
-            projectileHealth += 0.1f;
-        }
     }
 }

@@ -9,6 +9,7 @@ namespace Attack
     {
         public float splashRadius;
         private Collider2D[] splashTargets = new Collider2D[100];
+        [SerializeField] private float splashRadiusPerLevel;
 
         // ReSharper disable once ParameterHidesMember
         protected override void OnHit(Transform hitTarget, Projectile projectile)
@@ -62,9 +63,7 @@ namespace Attack
 
         public override void OnLevelUp(int level)
         {
-            damage += 0.5f;
-            AttackSpeed += 0.025f;
-            splashRadius += 0.01f;
+            splashRadius += splashRadiusPerLevel;
         }
     }
 }

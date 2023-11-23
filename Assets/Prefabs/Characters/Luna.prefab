@@ -114,17 +114,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 4589680981546420528, guid: f1d8228fcb42e4c7eaef7ccfa7b712c5, type: 3}
   damage: 9
-  attackSpeed: 1
+  attackSpeed: 1.2
   showAnimation: 0
   knockBackForce: 1.5
   projectileHealth: 1
-  maxLevel: 0
-  attackRange: 4
+  maxLevel: 18
+  attackRange: 5
   targetLayer:
     serializedVersion: 2
     m_Bits: 512
   canAttack: 1
   type: 1
+  damagePerLevel: 0.5
+  attackSpeedPerLevel: 0.075
+  projectileHealthPerLevel: 0.1
   circularTransform: {fileID: 638111476254004012}
   circularTransformParent: {fileID: 5740426558255643557}
 --- !u!1 &1837552806495531556
@@ -259,7 +262,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &972557859029837332
 Transform:
   m_ObjectHideFlags: 0
