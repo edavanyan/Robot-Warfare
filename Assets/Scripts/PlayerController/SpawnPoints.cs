@@ -11,7 +11,6 @@ namespace PlayerController
         void Start()
         {
             var camera2D = transform.parent.GetComponent<SmoothCamera2D>();
-            print(camera2D.CameraBounds);
             var boundsMin = camera2D.CameraBoundsMin;
 
             var cameraSize = new Vector2(camera2D.CameraBounds.x + 1f, camera2D.CameraBounds.y + 1f);

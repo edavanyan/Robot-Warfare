@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Attack;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Utils.Pool
 {
@@ -23,7 +25,7 @@ namespace Utils.Pool
                 item.New();
                 return item;
             }
-
+            
             var newItem = CreateItem(prototype);
             newItem.New();
             return newItem;

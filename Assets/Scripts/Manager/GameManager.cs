@@ -19,7 +19,10 @@ namespace Manager
         private EnemyManager enemyManager;
 
         private float currentTime = 0f;
-        private int interval = 5;
+        private int interval = 15;
+        private int difficultyInterval = 60;
+
+        private int difficulty = 0;
         
         public static string CharacterName { get; set; }
 
@@ -42,8 +45,18 @@ namespace Manager
         
             if (currentTime > interval)
             {
-                // interval += 30;
-                // enemyManager.limit = Math.Clamp(enemyManager.limit * 2, 0, 700);
+                interval += 30;
+                enemyManager.limit = Math.Clamp(Mathf.CeilToInt(enemyManager.limit * 1.5f), 0, 700);
+                if (difficulty > enemyManager.EnemyDifficultyIndex)
+                {
+                    enemyManager.EnemyDifficultyIndex++;
+                }
+            }
+
+            if (currentTime > difficultyInterval)
+            {
+                difficultyInterval += 60;
+                difficulty++;
             }
         }
     }

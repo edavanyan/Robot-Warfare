@@ -12,12 +12,14 @@ namespace Attack
         private SmoothCamera2D camera2D;
         protected ComponentPool<Projectile> ProjectilePool;
         public Projectile projectile;
-        public int damage;
+        public float damage;
         public float attackSpeed;
         protected float InverseSpeed;
         [SerializeField] private bool showAnimation;
         [SerializeField] protected float knockBackForce = 1.5f;
         [SerializeField] protected float projectileHealth;
+        protected int level = 1;
+        public int maxLevel;
         public float AttackSpeed
         {
             get => attackSpeed;
@@ -33,8 +35,7 @@ namespace Attack
         public event Action<bool> OnAttack;
         public event Action OnHitEvent;
         private readonly List<Projectile> activeProjectiles = new();
-
-        [SerializeField] private AttackType type;
+        public AttackType type;
 
         private void Start()
         {
@@ -74,7 +75,7 @@ namespace Attack
         {
             if (hitTarget.gameObject.activeSelf)
             {
-                projectile.Damage = damage;
+                projectile.Damage = Mathf.FloorToInt(damage);
                 projectile.KnockBackForce = knockBackForce;
                 hitTarget.parent.SendMessage(nameof(IHittable.Hit), projectile);
                 if (projectile.IsBroken)
@@ -133,8 +134,16 @@ namespace Attack
 
         public virtual void OnLevelUp(int level)
         {
-            damage += 1;
-            AttackSpeed += 0.02f;
+        }
+
+        public virtual void Upgrade()
+        {
+            level++;
+        }
+
+        public virtual void ScheduleUpgrade()
+        {
+            
         }
     }
 

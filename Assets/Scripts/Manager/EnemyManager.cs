@@ -38,7 +38,15 @@ namespace Manager
         //TODO remove this, it is for cinematic 
         public LootType currentLootType = LootType.Xp;
         public int killedEnemyCount = 0;
-        
+
+        private int waveIndex;
+
+        public int EnemyDifficultyIndex
+        {
+            get => waveIndex;
+            set => waveIndex = value >= enemyPools.Count ? 0 : value;
+        }
+
         void Awake()
         {
             foreach (var enemy in enemyInstances)
@@ -72,7 +80,7 @@ namespace Manager
                 return null;
             }
 
-            var index = Random.Range(0, enemyPools.Count);
+            var index = EnemyDifficultyIndex;
             var enemy = enemyPools[index].NewItem();
             enemy.Pool = enemyPools[index];
             activeEnemies.Add(enemy);
@@ -139,11 +147,7 @@ namespace Manager
                                 }
                             }
                         }
-
-                        // if (Random.value < 35f / activeEnemies.Count)
-                        // {
                         lootManager.DropLoot(enemy);
-                        // }
 
                         DestroyEnemy(enemy);
 

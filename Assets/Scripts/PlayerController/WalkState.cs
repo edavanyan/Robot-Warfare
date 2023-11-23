@@ -55,14 +55,6 @@ namespace PlayerController
 
             rigidBody.MovePosition(destination);
             animation.AdjustSpriteRotation(moveDirection.x);
-            // if (Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y))
-            // {
-            //     animation.WalkingHorizontalAnimation();
-            // }
-            // else if (Mathf.Abs(moveDirection.x) < Mathf.Abs(moveDirection.y))
-            // {
-            //     animation.WalkingVerticalAnimation();
-            // }
         }
 
         public override void ChangeState()

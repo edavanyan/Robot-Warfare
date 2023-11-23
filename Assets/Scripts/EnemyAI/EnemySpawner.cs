@@ -1,16 +1,10 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using Cameras;
 using Grid;
-using Loots;
 using Manager;
 using PlayerController;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
-using Utils.Pool;
 using Random = UnityEngine.Random;
 
 namespace EnemyAI
@@ -116,7 +110,7 @@ namespace EnemyAI
                 position.x = Random.Range(spawnAreaBounds.min.x, spawnAreaBounds.max.x);
                 position.y = Random.Range(spawnAreaBounds.min.y, spawnAreaBounds.max.y);
                 enemyManager.CreateEnemy(position);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
     }

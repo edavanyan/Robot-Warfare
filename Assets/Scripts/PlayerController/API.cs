@@ -18,6 +18,7 @@ namespace PlayerController
         public static Light2D GlobalLight => instance.light2d;
         public static CinemachineVirtualCamera VirtualCamera => instance.virtualCamera;
         public static UIManager UIManager => instance.uiManager;
+        public static LootManager LootManager => instance.lootManager;
 
         private CharacterController playerCharacter;
         private SmoothCamera2D camera2D;
@@ -26,6 +27,7 @@ namespace PlayerController
         private UIManager uiManager;
         [SerializeField]private Light2D light2d;
         private EnemyManager enemyManager;
+        private LootManager lootManager;
         
         private static API instance;
 
@@ -45,6 +47,7 @@ namespace PlayerController
                 globalVolume = FindObjectOfType<Volume>();
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
                 uiManager = FindObjectOfType<UIManager>();
+                lootManager = FindObjectOfType<LootManager>();
             }
             else
             {
@@ -54,7 +57,7 @@ namespace PlayerController
 
         private void SpawnMainCharacter()
         {
-            CharacterName ??= "Luna";
+            CharacterName ??= "Alden";
             foreach (var character in characters)
             {
                 if (character.name == CharacterName)

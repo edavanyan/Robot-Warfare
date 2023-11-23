@@ -13,12 +13,12 @@ namespace Loots
         public CircleCollider2D circleCollider2D;
         private Animator animator;
 
-        public event Action onCollected;
+        private event Action<Loot> OnCollected;
         private bool isCollecting;
-        private Vector3 headOffset = new Vector3(0, 0.25f, 0);
+        private readonly Vector3 headOffset = new Vector3(0, 0.25f, 0);
         private new SpriteRenderer renderer;
-        private static string UILayer = "UI";
-        private static string GroundLayer = "Ground";
+        private static readonly string UILayer = "UI";
+        private static readonly string GroundLayer = "Ground";
 
         public LootType lootType;
         public int amount;
@@ -28,6 +28,8 @@ namespace Loots
         private float verticalDistance;
 
         private bool isEnabled = true;
+
+        private bool movingToTarget;
         
         private void Awake()
         {
@@ -40,26 +42,22 @@ namespace Loots
             verticalDistance = camera.CameraBounds.y + 2;
         }
 
-        // private void Update()
-        // {
-        //     var targetPosition = camera.transform.position;
-        //     var position = transform.position;
-        //     if (Mathf.Abs(targetPosition.x - position.x) > horizontalDistance ||
-        //         Mathf.Abs(targetPosition.y - position.y) > verticalDistance)
-        //     {
-        //         if (isEnabled)
-        //         {
-        //             Disable();
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (!isEnabled)
-        //         {
-        //             Enable();
-        //         }
-        //     }
-        // }
+        public void Act()
+        {
+            if (movingToTarget)
+            {
+                var translation = (API.PlayerCharacter.transform.position - transform.position);
+                if (translation.sqrMagnitude > 0.01f)
+                {
+                    transform.Translate(Time.deltaTime * 10f * translation.normalized, Space.World);
+                }
+                else
+                {
+                    movingToTarget = false;
+                    OnCollected?.Invoke(this);
+                }
+            }
+        }
 
         private void Enable()
         {
@@ -97,17 +95,27 @@ namespace Loots
             renderer.sortingLayerName = UILayer;
             circleCollider2D.enabled = false;
             var move = transform.DOMove(collector.position + headOffset, 0.3f);
-            move.onComplete = OnCollected;
+            move.onComplete = Collected;
             move.SetEase(Ease.InBack);
             move.easePeriod = 0.2f;
             move.easeOvershootOrAmplitude = 7.5f;
         }
 
-        private void OnCollected()
+        private void Collected()
         {
             isCollecting = false;
-            onCollected?.Invoke();
-            onCollected = null;
+            OnCollected?.Invoke(this);
+            OnCollected = null;
+        }
+
+        public void RegisterOnCollected(Action<Loot> collectedCallback)
+        {
+            OnCollected += collectedCallback;
+        }
+
+        public bool OnCollectedRegistered()
+        {
+            return OnCollected != null;
         }
 
         public void New()
@@ -120,12 +128,19 @@ namespace Loots
         {
             renderer.sortingLayerName = GroundLayer;
             isCollecting = false;
+            movingToTarget = false;
             gameObject.SetActive(false);
+        }
+
+        public void MoveToPlayer()
+        {
+            movingToTarget = true;
+            isCollecting = true;
         }
     }
 
     public enum LootType
     {
-        Xp, Gold, Sword
+        Xp, Gold, Sword, Projectile, Magnet
     }
 }

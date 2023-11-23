@@ -20,7 +20,7 @@ namespace PlayerController
         public Rigidbody2D rigidBody;
         public Dictionary<string, Sprite> ShadowSprites;
         [SerializeField] private Sprite[] shadows;
-        [SerializeField] private Attacker[] attackers;
+        public List<Attacker> attackers;
         [SerializeField] private int maxHealth;
         [SerializeField] private Vector3 barOffset = new Vector3(0, -0.1f, 0);
         [SerializeField] private Transform directionIndicator;
@@ -28,9 +28,13 @@ namespace PlayerController
         private HitPoints hitPoints;
         private XPoints xPoints;
 
+        [SerializeField] private ParticleSystem levelUpEffect;
+
         private SpriteRenderer spriteRenderer;
         public event Action OnAttack;
         public event Action<int> OnLevelUp;
+
+        public bool IsLevelingUp { get; set; }
 
         protected override void Awake()
         {
@@ -38,14 +42,34 @@ namespace PlayerController
             {
                 Level = 1
             };
-            foreach (var attacker in attackers)
+            xPoints.OnLevelUp += level =>
             {
-                xPoints.OnLevelUp += level =>
+                foreach (var attacker in attackers)
                 {
                     attacker.OnLevelUp(level);
-                    OnLevelUp?.Invoke(level);
-                    hitPoints.IncreaseMaxHp(4);
-                };
+                }
+
+                OnLevelUp?.Invoke(level);
+                hitPoints.IncreaseMaxHp(4);
+
+                IsLevelingUp = true;
+                levelUpEffect.gameObject.SetActive(true);
+                levelUpEffect.Play();
+
+                spriteRenderer.DOComplete();
+                DOTween.Sequence()
+                    .Append(spriteRenderer.DOColor(Color.cyan, 0.2f).SetLoops(6, LoopType.Yoyo)
+                        .SetEase(Ease.OutSine))
+                    .Join(transform.DOScale(new Vector3(1.05f, 1.05f, 1), 0.2f).SetLoops(6, LoopType.Yoyo))
+                    .OnComplete(() =>
+                    {
+                        spriteRenderer.color = Color.white;
+                        transform.localScale = Vector3.one;
+                        IsLevelingUp = false;
+                    });
+            };
+            foreach (var attacker in attackers)
+            {
                 attacker.OnAttack += (showAnim) =>
                 {
                     if (showAnim)
@@ -61,7 +85,7 @@ namespace PlayerController
 
             hpBar = FindObjectOfType<HpBar>();
             hpBar.MaxValue = hpBar.Value = maxHealth;
-            
+
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             CharacterAnimation = new CharacterAnimation(animator, transform);
             ShadowSprites = new Dictionary<string, Sprite>();
@@ -69,9 +93,11 @@ namespace PlayerController
             {
                 var name = shadow.name;
                 var shadowSize = "shadow_".Length + 1;
-                var key = string.Concat(name.Substring(0, name.Length - shadowSize), shadow.name.Substring(name.Length - 1, 1));
+                var key = string.Concat(name.Substring(0, name.Length - shadowSize),
+                    shadow.name.Substring(name.Length - 1, 1));
                 ShadowSprites.Add(key, shadow);
             }
+
             base.Awake();
         }
 
@@ -88,6 +114,10 @@ namespace PlayerController
 
         public void Hit(Projectile projectile)
         {
+            if (IsLevelingUp)
+            {
+                return;
+            }
             spriteRenderer.DOComplete();
             spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
             CharacterAnimation.HitAnimation();
@@ -120,6 +150,26 @@ namespace PlayerController
             if (loot.lootType == LootType.Xp)
             {
                 xPoints.Xp += loot.amount;
+            }
+            else if (loot.lootType == LootType.Projectile)
+            {
+                UpgradeWeapon();
+            }
+            else if (loot.lootType == LootType.Magnet)
+            {
+                API.LootManager.CollectAll();
+            }
+        }
+
+        private void UpgradeWeapon()
+        {
+            foreach (var attacker in attackers)
+            {
+                attacker.Upgrade();
+                if (attacker.type == AttackType.Melee)
+                {
+                    attacker.ScheduleUpgrade();
+                }
             }
         }
     }

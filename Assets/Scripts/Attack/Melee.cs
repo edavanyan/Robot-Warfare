@@ -13,6 +13,13 @@ namespace Attack
 
         public override void New()
         {
+            gameObject.SetActive(true);
+        }
+
+        public override void Free()
+        {
+            base.Free();
+            gameObject.SetActive(false);
         }
 
         public override void Act()

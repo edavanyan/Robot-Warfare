@@ -56,7 +56,6 @@ namespace EnemyAI
             animationController = new EnemyAnimation(animator, transform);
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += Die;
-            print(awakeCount++);
             
             rigidBody = GetComponent<Rigidbody2D>();
             
