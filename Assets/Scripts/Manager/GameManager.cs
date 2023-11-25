@@ -19,10 +19,10 @@ namespace Manager
         private EnemyManager enemyManager;
 
         private float currentTime = 0f;
-        private int interval = 15;
+        private int interval = 1;
         private int difficultyInterval = 60;
 
-        private int difficulty = 0;
+        private int difficulty = 10;
         
         public static string CharacterName { get; set; }
 

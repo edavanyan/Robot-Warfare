@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MoreMountains.Feedbacks;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,6 +18,13 @@ namespace UI.Menu
         {
             GameInput.InputActions.Instance.Game.Movement.performed += CaptureInput;
             GameInput.InputActions.Instance.Game.Movement.canceled += CaptureInput;
+        }
+
+        private void OnEnable()
+        {
+            foreach (var character in characters)
+            {
+            }
         }
 
         private void OnDestroy()

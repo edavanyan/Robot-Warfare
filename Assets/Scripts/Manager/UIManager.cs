@@ -1,11 +1,15 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Manager
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField]private RectTransform canvasRect;
+        [SerializeField] private RectTransform canvasRect;
+        [SerializeField] private Image gameOverScreen;
+        [SerializeField] private Button quitButton;
 
         private void Awake()
         {
@@ -19,6 +23,16 @@ namespace Manager
             return new Vector2(
                 viewportPoint.x * scale.x - scale.x / 2,
                 viewportPoint.y * scale.y - scale.y / 2);
+        }
+
+        public void ShowGameOverScreen(Action onComplete = null)
+        {
+            gameOverScreen.gameObject.SetActive(true);
+            gameOverScreen.DOFade(1, 0.75f).OnComplete(() =>
+            {
+                onComplete?.Invoke();
+                quitButton.gameObject.SetActive(true);
+            });
         }
     }
 }

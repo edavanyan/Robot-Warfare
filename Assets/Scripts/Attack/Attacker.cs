@@ -46,6 +46,10 @@ namespace Attack
             camera2D = FindObjectOfType<SmoothCamera2D>();
             ProjectilePool = new ComponentPool<Projectile>(projectile);
             InverseSpeed = 1f / attackSpeed;
+        }
+
+        private void OnEnable()
+        {
             StartCoroutine(nameof(FindTargetAndAttack));
         }
 
@@ -62,6 +66,11 @@ namespace Attack
 
                 yield return null;
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
 
         // ReSharper disable once ParameterHidesMember

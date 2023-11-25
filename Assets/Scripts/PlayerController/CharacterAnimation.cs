@@ -14,7 +14,8 @@ namespace PlayerController
         private static readonly int IsHit = Animator.StringToHash("IsHit");
 
         private int currentTrigger;
-        
+        private static readonly int IsDie = Animator.StringToHash("IsDie");
+
 
         public CharacterAnimation(Animator animator, Transform transform)
         {
@@ -75,6 +76,11 @@ namespace PlayerController
         public void HitAnimation()
         {
             // animator.SetTrigger(IsHit);
+        }
+
+        public void DieAnimation()
+        {
+            animator.SetTrigger(IsDie);
         }
 
         public void PreviousAnimation()

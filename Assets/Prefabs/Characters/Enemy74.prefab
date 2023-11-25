@@ -50,12 +50,16 @@ MonoBehaviour:
   showAnimation: 0
   knockBackForce: 1.5
   projectileHealth: 0
+  maxLevel: 0
   attackRange: 0.5
   targetLayer:
     serializedVersion: 2
     m_Bits: 256
   canAttack: 1
   type: 0
+  damagePerLevel: 0
+  attackSpeedPerLevel: 0
+  projectileHealthPerLevel: 0
 --- !u!1 &4271782926183964646
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,9 +281,9 @@ MonoBehaviour:
   targetRadiusAcceleration: 0.5
   maxSpeed: 1.5
   drag: 1
-  maxHealth: 12
+  maxHealth: 15
   animator: {fileID: 4055675373552114165}
-  targetRadius: 0.1
+  targetRadius: 0
   xpAmount: 0
 --- !u!1 &5834083845185166232
 GameObject:

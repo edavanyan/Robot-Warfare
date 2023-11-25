@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using Cameras;
 using Cinemachine;
+using DG.Tweening;
 using Manager;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 namespace PlayerController
 {
@@ -32,7 +34,8 @@ namespace PlayerController
         private static API instance;
 
         [SerializeField]private List<CharacterController> characters;
-        
+        private Bloom bloom;
+
         public static string CharacterName { get; set; }
 
         private void Awake()
@@ -48,6 +51,7 @@ namespace PlayerController
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
                 uiManager = FindObjectOfType<UIManager>();
                 lootManager = FindObjectOfType<LootManager>();
+                GlobalVolume.profile.TryGet(out bloom);
             }
             else
             {
@@ -72,6 +76,28 @@ namespace PlayerController
         {
             character.gameObject.SetActive(true);
             instance.playerCharacter = character;
+        }
+
+        public static void ShowRedScreen(float intensity)
+        {
+            instance.bloom.active = true;
+            var tweenIntensity = instance.bloom.intensity.value;
+            DOTween.To(() => tweenIntensity, i => instance.bloom.intensity.value = i, intensity, 0.5f);
+        }
+
+        public static void RemoveRedScreen()
+        {
+            instance.bloom.active = false;
+        }
+
+        public static void GameOver()
+        {
+            UIManager.ShowGameOverScreen(RemoveRedScreen);
+        }
+
+        public void Quit()
+        {
+            SceneManager.LoadScene("Menu");
         }
     }
 }

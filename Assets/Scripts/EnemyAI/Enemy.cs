@@ -80,7 +80,11 @@ namespace EnemyAI
             {
                 return;
             }
-            spriteRenderer.DOColor(Color.red, 0.05f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
+
+            spriteRenderer.DOColor(Color.red, 0.05f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine).OnComplete(() =>
+            {
+                spriteRenderer.color = Color.white;
+            });
             animationController.HitAnimation();
             if (!hitPoints.Hit(projectile.Damage))
             {

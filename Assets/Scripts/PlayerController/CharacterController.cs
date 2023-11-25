@@ -81,7 +81,15 @@ namespace PlayerController
             }
 
             hitPoints = new HitPoints(maxHealth);
-            hitPoints.OnDie += () => Debug.Log("Player Die");
+            hitPoints.OnDie += () =>
+            {
+                foreach (var attacker in attackers)
+                {
+                    attacker.gameObject.SetActive(false);
+                }
+                CharacterAnimation.DieAnimation();
+                DOTween.Sequence().SetDelay(1f).AppendCallback(API.GameOver);
+            };
 
             hpBar = FindObjectOfType<HpBar>();
             hpBar.MaxValue = hpBar.Value = maxHealth;
@@ -119,10 +127,17 @@ namespace PlayerController
                 return;
             }
             spriteRenderer.DOComplete();
-            spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine);
+            spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine).OnComplete(() =>
+            {
+                spriteRenderer.color = Color.white;
+            });
             CharacterAnimation.HitAnimation();
             hitPoints.Hit(projectile.Damage);
             hpBar.Change(projectile.Damage);
+            if (hitPoints.CurrentHitPoints <= hitPoints.MaxHitPoints * 0.3f)
+            {
+                API.ShowRedScreen(1 - (float)hitPoints.CurrentHitPoints / hitPoints.MaxHitPoints);
+            }
         }
 
         private void LateUpdate()

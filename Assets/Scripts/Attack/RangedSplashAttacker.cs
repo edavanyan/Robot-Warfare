@@ -63,6 +63,7 @@ namespace Attack
 
         public override void OnLevelUp(int level)
         {
+            base.OnLevelUp(level);
             splashRadius += splashRadiusPerLevel;
         }
     }
