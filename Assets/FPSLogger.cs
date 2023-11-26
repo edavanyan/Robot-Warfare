@@ -36,6 +36,8 @@ public class FPSLogger : MonoBehaviour
     {
         int minutes = (int)(time / 60);
         int seconds = (int)(time % 60);
-        text.text = $"{minutes}:{seconds}";
+        var minutesZero = minutes < 10 ? "0" : "";
+        var secondsZero = seconds < 10 ? "0" : "";
+        text.text = $"{minutesZero}{minutes}:{secondsZero}{seconds}";
     }
 }

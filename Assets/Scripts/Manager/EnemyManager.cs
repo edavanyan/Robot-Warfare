@@ -35,7 +35,6 @@ namespace Manager
 
         private float sumOfProbs = 0;
         
-        //TODO remove this, it is for cinematic 
         public LootType currentLootType = LootType.Xp;
         public int killedEnemyCount = 0;
 

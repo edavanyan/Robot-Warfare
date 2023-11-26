@@ -1,5 +1,7 @@
 using System;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +11,10 @@ namespace Manager
     {
         [SerializeField] private RectTransform canvasRect;
         [SerializeField] private Image gameOverScreen;
-        [SerializeField] private Button quitButton;
-
+        [SerializeField] private Image quitButton;
+        [SerializeField] private InputForJoystick joystickManager;
+        [SerializeField] private FPSLogger timer;
+        
         private void Awake()
         {
             canvasRect = GetComponent<RectTransform>();
@@ -27,11 +31,14 @@ namespace Manager
 
         public void ShowGameOverScreen(Action onComplete = null)
         {
+            Destroy(joystickManager.gameObject);
+            timer.enabled = false;
             gameOverScreen.gameObject.SetActive(true);
             gameOverScreen.DOFade(1, 0.75f).OnComplete(() =>
             {
                 onComplete?.Invoke();
                 quitButton.gameObject.SetActive(true);
+                quitButton.GetComponent<MMScaleShaker>().enabled = true;
             });
         }
     }

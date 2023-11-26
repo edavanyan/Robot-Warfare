@@ -5,7 +5,6 @@ namespace EnemyAI
     public class SeparationBehavior : Steering
     {
         private float threshold = 2f;
-        private float decayCoefficient = -25f;
         private Collider2D[] targets = new Collider2D[10];
         public static LayerMask CollisionLayer = LayerMask.GetMask("Enemy");
         

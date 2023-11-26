@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Cameras;
 using Cinemachine;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using Manager;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -35,6 +37,7 @@ namespace PlayerController
 
         [SerializeField]private List<CharacterController> characters;
         private Bloom bloom;
+        private static TweenerCore<float, float, FloatOptions> redScreenPulse;
 
         public static string CharacterName { get; set; }
 
@@ -61,7 +64,7 @@ namespace PlayerController
 
         private void SpawnMainCharacter()
         {
-            CharacterName ??= "Alden";
+            CharacterName ??= "Luna";
             foreach (var character in characters)
             {
                 if (character.name == CharacterName)
@@ -80,13 +83,18 @@ namespace PlayerController
 
         public static void ShowRedScreen(float intensity)
         {
-            instance.bloom.active = true;
-            var tweenIntensity = instance.bloom.intensity.value;
-            DOTween.To(() => tweenIntensity, i => instance.bloom.intensity.value = i, intensity, 0.5f);
+            if (!instance.bloom.active)
+            {
+                instance.bloom.active = true;
+            }
+            instance.bloom.intensity.value = 0;
+            redScreenPulse?.Kill();
+            redScreenPulse = DOTween.To(() => instance.bloom.intensity.value, i => instance.bloom.intensity.value = i, intensity, 1).SetLoops(-1, LoopType.Restart).SetEase(Ease.InOutSine);
         }
 
         public static void RemoveRedScreen()
         {
+            redScreenPulse.Kill();
             instance.bloom.active = false;
         }
 

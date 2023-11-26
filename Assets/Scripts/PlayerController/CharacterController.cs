@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Attack;
 using DG.Tweening;
@@ -13,6 +14,7 @@ namespace PlayerController
     public class CharacterController : StateRunner<CharacterController>, IHittable
     {
         private HpBar hpBar;
+        private XpBar xpBar;
         public CharacterAnimation CharacterAnimation;
         public Vector2 Input { get; set; }
 
@@ -36,14 +38,23 @@ namespace PlayerController
 
         public bool IsLevelingUp { get; set; }
 
+        private bool isAlive = true;
+
         protected override void Awake()
         {
             xPoints = new XPoints
             {
                 Level = 1
             };
+            xpBar = FindObjectOfType<XpBar>();
+            xpBar.MaxValue = xPoints.NextLevelXp;
+            xpBar.Value = 0;
+            xpBar.ChangeImmediate(int.MinValue);
             xPoints.OnLevelUp += level =>
             {
+                xpBar.MaxValue = xPoints.NextLevelXp - xPoints.Xp;
+                xpBar.Value = 0;
+                xpBar.ChangeImmediate(int.MinValue);
                 foreach (var attacker in attackers)
                 {
                     attacker.OnLevelUp(level);
@@ -83,12 +94,17 @@ namespace PlayerController
             hitPoints = new HitPoints(maxHealth);
             hitPoints.OnDie += () =>
             {
-                foreach (var attacker in attackers)
+                if (isAlive)
                 {
-                    attacker.gameObject.SetActive(false);
+                    isAlive = false;
+                    foreach (var attacker in attackers)
+                    {
+                        attacker.gameObject.SetActive(false);
+                    }
+                    xpBar.gameObject.SetActive(false);
+                    CharacterAnimation.DieAnimation();
+                    DOTween.Sequence().SetDelay(1f).AppendCallback(API.GameOver);
                 }
-                CharacterAnimation.DieAnimation();
-                DOTween.Sequence().SetDelay(1f).AppendCallback(API.GameOver);
             };
 
             hpBar = FindObjectOfType<HpBar>();
@@ -164,7 +180,7 @@ namespace PlayerController
         {
             if (loot.lootType == LootType.Xp)
             {
-                xPoints.Xp += loot.amount;
+                xpBar.Change(loot.amount, () => xPoints.Xp += loot.amount);
             }
             else if (loot.lootType == LootType.Projectile)
             {

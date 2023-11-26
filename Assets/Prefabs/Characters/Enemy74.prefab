@@ -281,7 +281,7 @@ MonoBehaviour:
   targetRadiusAcceleration: 0.5
   maxSpeed: 1.5
   drag: 1
-  maxHealth: 15
+  maxHealth: 14
   animator: {fileID: 4055675373552114165}
   targetRadius: 0
   xpAmount: 0

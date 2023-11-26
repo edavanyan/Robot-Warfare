@@ -1,13 +1,19 @@
 using System;
+using UnityEngine;
 
 namespace PlayerController
 {
     public class XPoints
     {
         private int xp;
-        private int nextLevelXp = 5;
+        public int NextLevelXp { get; set; }
 
         public event Action<int> OnLevelUp;
+
+        public XPoints()
+        {
+            NextLevelXp = 5;
+        }
 
         public int Xp
         {
@@ -15,9 +21,9 @@ namespace PlayerController
             set
             {
                 xp = value;
-                if (xp >= nextLevelXp)
+                if (xp >= NextLevelXp)
                 {
-                    nextLevelXp += Level * 5;
+                    NextLevelXp += Level * 5;
                     Level++;
                     OnLevelUp?.Invoke(Level);
                 }
