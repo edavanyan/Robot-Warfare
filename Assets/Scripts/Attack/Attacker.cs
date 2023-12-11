@@ -27,6 +27,7 @@ namespace Attack
             {
                 attackSpeed = value;
                 InverseSpeed = 1f / attackSpeed;
+                attackWaitTime = new WaitForSeconds(InverseSpeed);
             }
         }
         public float attackRange;
@@ -46,6 +47,7 @@ namespace Attack
             camera2D = FindObjectOfType<SmoothCamera2D>();
             ProjectilePool = new ComponentPool<Projectile>(projectile);
             InverseSpeed = 1f / attackSpeed;
+            attackWaitTime = new WaitForSeconds(InverseSpeed);
         }
 
         private void OnEnable()
@@ -61,7 +63,7 @@ namespace Attack
                 if (possibleTarget)
                 {
                     Attack(possibleTarget.transform);
-                    yield return new WaitForSeconds(InverseSpeed);
+                    yield return attackWaitTime;
                 }
 
                 yield return null;
@@ -114,6 +116,8 @@ namespace Attack
         }
 
         protected readonly List<Projectile> TempForRemoveProj = new();
+        protected WaitForSeconds attackWaitTime;
+
         private void FixedUpdate()
         {
             if (type == AttackType.Ranged)

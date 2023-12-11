@@ -79,7 +79,7 @@ namespace Attack
                     yield return new WaitForSeconds(0.05f);
                     AddWeapon();
                 }
-                
+
                 yield return new WaitForSeconds(InverseSpeed + duration);
             }
         }

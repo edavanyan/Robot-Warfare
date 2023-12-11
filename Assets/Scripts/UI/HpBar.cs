@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,9 +14,14 @@ namespace UI
 
         [SerializeField] private RectMask2D hpMask;
         [SerializeField] private Image bar;
-        [SerializeField] private Transform hpBar;
+        [SerializeField] private RectTransform hpBar;
 
         private bool isTweening;
+
+        private void Awake()
+        {
+            Debug.Log(hpBar.sizeDelta.x);
+        }
 
         public void Change(int amount)
         {
@@ -24,7 +30,7 @@ namespace UI
             bar.color = Color.Lerp(Color.red, Color.green, t);
             
             var hpMaskPadding = hpMask.padding;
-            hpMaskPadding.z = 0.675f * (1f - t);
+            hpMaskPadding.z = hpBar.sizeDelta.x * hpBar.localScale.x * (1f - t);
             hpMask.padding = hpMaskPadding;
         }
     }

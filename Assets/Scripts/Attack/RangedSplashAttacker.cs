@@ -55,7 +55,7 @@ namespace Attack
                             Attack(circularTransform);
                         }
                     }
-                    yield return new WaitForSeconds(InverseSpeed);
+                    yield return attackWaitTime;
                 }
                 yield return null;
             }

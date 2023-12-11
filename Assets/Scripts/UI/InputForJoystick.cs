@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.OnScreen;
+using UnityEngine.UI;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 namespace UI
@@ -15,10 +16,24 @@ namespace UI
         private Vector2 mousePosition;
         [SerializeField] private OnScreenStick onScreenStick;
         private RectTransform canvasRect;
+        [SerializeField] private Image outer;
+        [SerializeField] private Image inner;
+
+        private Color outerColor;
+        private Color innerColor;
 
         private void Awake()
         {
-            gameObject.SetActive(false);
+            outerColor = outer.color;
+            innerColor = inner.color;
+
+            var color = outerColor;
+            color.a = 0;
+            outer.color = color;
+            color = innerColor;
+            color.a = 0;
+            inner.color = color;
+            
             canvasRect = canvas.GetComponent<RectTransform>();
             InputActions.Instance.Game.TouchInput.performed += AdjustJoystickPosition;
         }
@@ -28,6 +43,10 @@ namespace UI
             var touch = context.ReadValue<TouchState>();
             if (touch.phase == TouchPhase.Began)
             {
+                var color = outerColor;
+                outer.color = color;
+                color = innerColor;
+                inner.color = color;
                 mousePosition = touch.position;
                 gameObject.SetActive(true);
                 var viewportPosition = new Vector3(mousePosition.x / Screen.width,
@@ -41,7 +60,12 @@ namespace UI
             }
             else if (touch.phase == TouchPhase.Ended)
             {
-                DOTween.Sequence().SetDelay(1f).AppendCallback(() => gameObject.SetActive(false));
+                var color = outerColor;
+                color.a = 0;
+                outer.color = color;
+                color = innerColor;
+                color.a = 0;
+                inner.color = color;
             }
         }
 

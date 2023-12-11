@@ -11,6 +11,7 @@ namespace Manager
     {
         [SerializeField] private RectTransform canvasRect;
         [SerializeField] private Image gameOverScreen;
+        [SerializeField] private Image gameOverBackground;
         [SerializeField] private Image quitButton;
         [SerializeField] private InputForJoystick joystickManager;
         [SerializeField] private FPSLogger timer;
@@ -33,7 +34,8 @@ namespace Manager
         {
             Destroy(joystickManager.gameObject);
             timer.enabled = false;
-            gameOverScreen.gameObject.SetActive(true);
+            gameOverBackground.gameObject.SetActive(true);
+            gameOverBackground.DOFade(1, 0.75f);
             gameOverScreen.DOFade(1, 0.75f).OnComplete(() =>
             {
                 onComplete?.Invoke();

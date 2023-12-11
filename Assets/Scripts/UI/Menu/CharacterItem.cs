@@ -31,7 +31,7 @@ namespace UI.Menu
         {
             var rectTransform = avatar.GetComponent<RectTransform>();
             // avatar.DOScale(new Vector3(1f, 1f, 1), 0.2f).SetEase(Ease.InSine);
-            rectTransform.DOSizeDelta(new Vector2(200, 200), 0.2f).SetEase(Ease.InSine);
+            rectTransform.DOSizeDelta(new Vector2(0, 0), 0.2f).SetEase(Ease.InSine);
             avatar.GetComponent<RectTransform>().DOAnchorPosX(0, 0.1f).SetEase(Ease.InSine);
             selectionFrame.enabled = false;
         }

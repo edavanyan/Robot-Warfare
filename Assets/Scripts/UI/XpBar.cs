@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -15,13 +16,19 @@ namespace UI
         [SerializeField] private RectMask2D xpMask;
         private readonly List<TweenData> queuedAnimations = new();
         private bool animating;
+        private RectTransform parentTransform;
+
+        private void Awake()
+        {
+            parentTransform = transform.parent as RectTransform;
+        }
 
         public void ChangeImmediate(int amount)
         {
             Value = Mathf.Clamp(Value + amount, 0, MaxValue);
             var t = (float)Value / MaxValue;
             var xpMaskPadding = xpMask.padding;
-            xpMaskPadding.z = 1188 * (1f - t);
+            xpMaskPadding.z = parentTransform.sizeDelta.x * (1f - t);
             xpMask.padding = xpMaskPadding;
         }
 
@@ -47,7 +54,7 @@ namespace UI
             Value = Mathf.Clamp(Value + amount, 0, MaxValue);
             var t = (float)Value / MaxValue;
             var xpMaskPadding = xpMask.padding;
-            var z = 1188 * (1f - t);
+            var z = parentTransform.sizeDelta.x * (1f - t);
             var duration = 0.2f / (Mathf.Clamp(queuedAnimations.Count, 2, 96) / 2f);
             DOTween.To(() => xpMaskPadding.z, value => xpMaskPadding.z = value, z, duration)
                 .SetEase(Ease.Linear)
@@ -56,7 +63,6 @@ namespace UI
                 {
                     animating = false;
                     onComplete?.Invoke();
-                    print("queue size: " + queuedAnimations.Count);
                     if (queuedAnimations.Count > 0)
                     {
                         var queuedAnimation = queuedAnimations[0];
