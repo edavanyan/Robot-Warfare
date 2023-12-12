@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2055102311959635368}
   - component: {fileID: 5890802837618066405}
   - component: {fileID: 10145298200545765}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: PF Props Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2055102312182832481}
   - component: {fileID: 2055102312182832480}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

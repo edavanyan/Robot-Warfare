@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2577585254280797811}
   - component: {fileID: 2577585254280797808}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2577585254963922478}
   - component: {fileID: 2577585254963922476}
   - component: {fileID: 9140004029675014805}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: PF Props Pot C
   m_TagString: Untagged
   m_Icon: {fileID: 0}

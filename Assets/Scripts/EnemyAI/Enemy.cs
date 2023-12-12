@@ -15,7 +15,7 @@ namespace EnemyAI
     public class Enemy : MonoBehaviour, IHittable, IPoolable
     {
         internal Rigidbody2D rigidBody;
-        private readonly Steering[] steeringList = new Steering[2];
+        private readonly Steering[] steeringList = new Steering[3];
         public float maxAcceleration = 3f;
         public float targetRadiusAcceleration = 0.5f;
         public float maxSpeed = 1f;
@@ -108,7 +108,8 @@ namespace EnemyAI
         private void InitializeSteeringList()
         {
             steeringList[0] = new SeekBehavior(1);
-            steeringList[1] = new ArriveBehavior(1);
+            steeringList[1] = new ObstacleAvoidanceBehavior(3);
+            steeringList[2] = new ArriveBehavior(1);
         }
 
         public void Act()

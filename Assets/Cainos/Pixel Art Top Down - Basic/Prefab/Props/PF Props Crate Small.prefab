@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8150476868300563374}
   - component: {fileID: 8150476868300563360}
   - component: {fileID: 8150476868300563361}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: PF Props Crate Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8150476868737220288}
   - component: {fileID: 8150476868737220291}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

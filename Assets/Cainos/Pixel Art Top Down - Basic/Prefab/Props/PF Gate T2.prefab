@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944588161500794}
   - component: {fileID: 6644944588161500793}
-  m_Layer: 21
+  m_Layer: 6
   m_Name: Collider T
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944588469475089}
   - component: {fileID: 6644944588469475088}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944589615368674}
   - component: {fileID: 6644944589615368673}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Collider L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944589679723018}
   - component: {fileID: 6644944589679723017}
-  m_Layer: 20
+  m_Layer: 6
   m_Name: Collider R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,7 +332,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6644944589867386884}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PF Gate T2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944589878580092}
   - component: {fileID: 6644944589878580093}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TX Struct Bridge Gate T
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644944589913744275}
   - component: {fileID: 6644944589913744276}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TX Struct Bridge Gate B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
