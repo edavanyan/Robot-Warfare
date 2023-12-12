@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace EnemyAI
+namespace EnemyAI.SteeringBehaviors
 {
     public struct SteeringData
     {

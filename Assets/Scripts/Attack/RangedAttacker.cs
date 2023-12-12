@@ -8,13 +8,12 @@ namespace Attack
     {
         private float startArea = 0f;
         
-        //cinematic staff
-        public Transform circularTransform;
-        public Transform circularTransformParent;
+        [SerializeField] protected Transform circularTransform;
+        [SerializeField] protected Transform circularTransformParent;
 
         protected override IEnumerator FindTargetAndAttack()
         {
-            while (canAttack)
+            while (CanAttack)
             {
                 while (startArea < attackRange)
                 {

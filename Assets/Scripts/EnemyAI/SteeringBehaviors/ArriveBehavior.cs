@@ -1,12 +1,11 @@
 using Manager;
 using UnityEngine;
 
-namespace EnemyAI
+namespace EnemyAI.SteeringBehaviors
 {
     public class ArriveBehavior : Steering
     {
         private float slowRadius = 5f;
-
         private float inverseRadius;
 
         public ArriveBehavior(int weight) : base(weight)
@@ -26,9 +25,7 @@ namespace EnemyAI
             if (distance < enemy.targetRadius)
             {
                 var velocity = enemy.rigidBody.velocity;
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (Mathf.Sign(direction.x) == Mathf.Sign(velocity.x) &&
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
                     Mathf.Sign(direction.y) == Mathf.Sign(velocity.y))
                 {
                     enemy.rigidBody.velocity = Vector2.zero;

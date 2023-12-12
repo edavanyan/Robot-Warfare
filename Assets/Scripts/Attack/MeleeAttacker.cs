@@ -30,7 +30,7 @@ namespace Attack
 
         protected override IEnumerator FindTargetAndAttack()
         {
-            while (canAttack)
+            while (CanAttack)
             {
 
                 var scaleX = transform.parent.parent.localScale.x;

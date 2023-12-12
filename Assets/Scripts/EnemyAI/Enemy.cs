@@ -2,6 +2,7 @@ using System;
 using Attack;
 using Cameras;
 using DG.Tweening;
+using EnemyAI.SteeringBehaviors;
 using Loots;
 using Manager;
 using Unity.VisualScripting;
@@ -14,7 +15,7 @@ namespace EnemyAI
     public class Enemy : MonoBehaviour, IHittable, IPoolable
     {
         internal Rigidbody2D rigidBody;
-        // private readonly Steering[] steeringList = new Steering[2];
+        private readonly Steering[] steeringList = new Steering[2];
         public float maxAcceleration = 3f;
         public float targetRadiusAcceleration = 0.5f;
         public float maxSpeed = 1f;
@@ -106,8 +107,8 @@ namespace EnemyAI
 
         private void InitializeSteeringList()
         {
-            // steeringList[0] = new SeekBehavior(1);
-            // steeringList[1] = new ArriveBehavior(1);
+            steeringList[0] = new SeekBehavior(1);
+            steeringList[1] = new ArriveBehavior(1);
         }
 
         public void Act()
@@ -119,12 +120,12 @@ namespace EnemyAI
 
             var target = API.PlayerCharacter.transform;
             var selfTransform = transform;
-            var acceleration = target.position - selfTransform.position;
-            // foreach (var steering in steeringList)
-            // {
-            //     var steeringData = steering.GetSteering(this);
-            //     acceleration += steeringData.linear * steering.GetWeight();
-            // }
+            var acceleration = (Vector2)(target.position - selfTransform.position);
+            foreach (var steering in steeringList)
+            {
+                var steeringData = steering.GetSteering(this);
+                acceleration += steeringData.linear * steering.GetWeight();
+            }
             if (acceleration.sqrMagnitude > 3 * maxSpeed * maxSpeed)
             {
                 acceleration.Normalize();
@@ -140,14 +141,6 @@ namespace EnemyAI
                 acceleration = Vector2.zero;
             }
             rigidBody.AddForce(acceleration);
-            // if (rigidBody.velocity != Vector2.zero)
-            // {
-            //     animationController.WalkingAnimation();
-            // }
-            // else
-            // {
-            //     animationController.IdleAnimation();
-            // }
 
             var targetPosition = camera.transform.position;
             var position = selfTransform.position;
@@ -160,7 +153,7 @@ namespace EnemyAI
 
         private void Die()
         {
-            attacker.canAttack = false;
+            attacker.CanAttack = false;
             circleCollider2D.enabled = false;
             rigidBody.velocity = Vector2.zero;
             DOTween.Sequence().SetDelay(0.1f)
@@ -210,7 +203,7 @@ namespace EnemyAI
         public void New()
         {
             spriteRenderer.color = Color.white;
-            attacker.canAttack = true;
+            attacker.CanAttack = true;
             transform.localScale = Vector3.one;
             dead = false;
             circleCollider2D.enabled = true;

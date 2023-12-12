@@ -1,6 +1,6 @@
 using Manager;
 
-namespace EnemyAI
+namespace EnemyAI.SteeringBehaviors
 {
     public class SeekBehavior : Steering
     {

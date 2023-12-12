@@ -30,7 +30,7 @@ namespace Attack
         
         protected override IEnumerator FindTargetAndAttack()
         {
-            while (canAttack)
+            while (CanAttack)
             {
                 var target = Physics2D.OverlapCircle(transform.position, 5f,targetLayer);
                 if (target)

@@ -11,16 +11,17 @@ namespace Attack
     {
         private SmoothCamera2D camera2D;
         protected ComponentPool<Projectile> ProjectilePool;
-        public Projectile projectile;
-        public float damage;
-        public float attackSpeed;
+        [SerializeField]private Projectile projectile;
+        [SerializeField]protected float damage;
+        [SerializeField]private float attackSpeed;
         protected float InverseSpeed;
         [SerializeField] private bool showAnimation;
         [SerializeField] protected float knockBackForce = 1.5f;
         [SerializeField] protected float projectileHealth;
         protected int level = 1;
-        public int maxLevel;
-        public float AttackSpeed
+        [SerializeField]protected int maxLevel;
+
+        protected float AttackSpeed
         {
             get => attackSpeed;
             set
@@ -30,9 +31,9 @@ namespace Attack
                 attackWaitTime = new WaitForSeconds(InverseSpeed);
             }
         }
-        public float attackRange;
-        public LayerMask targetLayer;
-        public bool canAttack = true;
+        [SerializeField] protected float attackRange;
+        [SerializeField] protected LayerMask targetLayer;
+        public bool CanAttack { protected get; set; }
         public event Action<bool> OnAttack;
         public event Action OnHitEvent;
         private readonly List<Projectile> activeProjectiles = new();
@@ -52,12 +53,13 @@ namespace Attack
 
         private void OnEnable()
         {
+            CanAttack = true;
             StartCoroutine(nameof(FindTargetAndAttack));
         }
 
         protected virtual IEnumerator FindTargetAndAttack()
         {
-            while (canAttack)
+            while (CanAttack)
             {
                 var possibleTarget = Physics2D.OverlapCircle(transform.position, attackRange, targetLayer);
                 if (possibleTarget)
@@ -75,7 +77,6 @@ namespace Attack
             Gizmos.DrawWireSphere(transform.position, attackRange);
         }
 
-        // ReSharper disable once ParameterHidesMember
         protected void Attack(Transform target)
         {
             var projToFire = CreateProjectile();
@@ -85,7 +86,6 @@ namespace Attack
             OnAttack?.Invoke(showAnimation);
         }
 
-        // ReSharper disable once ParameterHidesMember
         protected virtual void OnHit(Transform hitTarget, Projectile projectile)
         {
             if (hitTarget.gameObject.activeSelf)
@@ -101,14 +101,13 @@ namespace Attack
             }
         }
 
-        protected Projectile CreateProjectile()
+        private Projectile CreateProjectile()
         {
             var item = ProjectilePool.NewItem();
             item.health = (int)projectileHealth;
             return item;
         }
 
-        // ReSharper disable once ParameterHidesMember
         private void DestroyProjectile(Projectile projectile)
         {
             ProjectilePool.DestroyItem(projectile);
@@ -156,7 +155,7 @@ namespace Attack
             projectileHealth += projectileHealthPerLevel;
         }
 
-        public virtual void Upgrade()
+        public void Upgrade()
         {
             level++;
         }

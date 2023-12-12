@@ -1,4 +1,4 @@
-namespace EnemyAI
+namespace EnemyAI.SteeringBehaviors
 {
     public abstract class Steering
     {
