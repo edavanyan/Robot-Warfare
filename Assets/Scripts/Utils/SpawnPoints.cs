@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Cameras;
 using UnityEngine;
-using Utils;
 
-namespace PlayerController
+namespace Utils
 {
     public class SpawnPoints : MonoBehaviour
     {

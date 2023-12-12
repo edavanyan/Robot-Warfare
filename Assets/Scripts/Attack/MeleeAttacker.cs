@@ -1,7 +1,6 @@
 using System.Collections;
 using DG.Tweening;
-using PlayerController;
-using Unity.Mathematics;
+using Manager;
 using UnityEngine;
 
 namespace Attack

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MoreMountains.Feedbacks;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;

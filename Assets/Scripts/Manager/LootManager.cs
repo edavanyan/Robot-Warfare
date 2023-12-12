@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using EnemyAI;
 using Loots;
-using PlayerController;
 using UnityEngine;
 using Utils.Pool;
 using Random = UnityEngine.Random;

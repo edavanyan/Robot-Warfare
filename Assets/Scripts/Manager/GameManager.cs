@@ -1,20 +1,14 @@
 using System;
 using Cinemachine;
 using DG.Tweening;
-using PlayerController;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
 namespace Manager
 {
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI levelText;
-        private Volume volume;
-        private Light2D globalLight;
         private CinemachineVirtualCamera virtualCamera;
         private EnemyManager enemyManager;
 
@@ -23,13 +17,9 @@ namespace Manager
         private int difficultyInterval = 60;
 
         private int difficulty = 0;
-        
-        public static string CharacterName { get; set; }
 
         private void Awake()
         {
-            volume = API.GlobalVolume;
-            globalLight = API.GlobalLight;
             virtualCamera = API.VirtualCamera;
             virtualCamera.Follow = API.PlayerCharacter.transform;
             enemyManager = API.EnemyManager;
@@ -58,6 +48,11 @@ namespace Manager
                 difficultyInterval += 60;
                 difficulty++;
             }
+        }
+        
+        public void GameOver()
+        {
+            API.GameCanvas.ShowGameOverScreen(API.VfxManager.RemoveRedScreen);
         }
     }
 }

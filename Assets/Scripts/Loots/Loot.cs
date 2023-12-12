@@ -1,10 +1,9 @@
 using System;
 using Cameras;
 using DG.Tweening;
-using PlayerController;
+using Manager;
 using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Loots
 {

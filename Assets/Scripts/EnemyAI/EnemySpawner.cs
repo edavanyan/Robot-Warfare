@@ -2,7 +2,6 @@ using System.Collections;
 using Cameras;
 using Grid;
 using Manager;
-using PlayerController;
 using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;

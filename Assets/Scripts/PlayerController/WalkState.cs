@@ -1,68 +1,92 @@
-﻿using StateMachine;
+﻿using System;
+using StateMachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace PlayerController
 {
     [CreateAssetMenu(menuName = "States/Character/Walk")]
     public class WalkState : PlayerState
     {
-
         [SerializeField]
         private float speed = 5f;
 
         private float currentSpeed = 0;
-        private Vector2 moveDirection = Vector2.zero;
+        private Transform directionIndicator;
         [SerializeField]
         private float acceleration = 50f;
         [SerializeField]
         private float deAcceleration = 100f;
 
+        private Optional<Action> update;
+        private Optional<Action> fixedUpdate;
+        private Optional<Action> changeState;
+        private Optional<Action> exit;
+
         public override void Init(CharacterController parent)
         {
             base.Init(parent);
             currentSpeed = 0;
-        }
+            directionIndicator = parent.DirectionIndicator;
+            directionIndicator.gameObject.SetActive(true);
 
-        public override void PlayStateAnimation()
-        {
-            // animation.WalkingHorizontalAnimation();
-        }
+            update ??= new(() => {
+                var scale = runner.transform.localScale;
+                directionIndicator.localScale = new Vector3(scale.x, scale.y, scale.z);
+                var moveDirection = runner.Input;
+                if (moveDirection.sqrMagnitude > 0 && currentSpeed >= 0)
+                {
+                    currentSpeed += acceleration * speed * Time.deltaTime;
+                    directionIndicator.rotation =
+                        Quaternion.Euler(0, 0, Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg);
+                }
+                else
+                {
+                    currentSpeed -= deAcceleration * speed * Time.deltaTime;
+                }
+                currentSpeed = Mathf.Clamp(currentSpeed, 0, speed); });
 
-        public override Vector2 GetPlayerMoveDirection()
-        {
-            return moveDirection * currentSpeed;
-        }
+            fixedUpdate ??= new(() => {
+                var moveDirection = runner.Input;
+                var position = rigidBody.position;
+                var destination = position + currentSpeed * Time.fixedDeltaTime * moveDirection;
 
-        public override void Update()
-        {
-            if (runner.Input.sqrMagnitude > 0 && currentSpeed >= 0)
+                rigidBody.MovePosition(destination);
+                animation.AdjustSpriteRotation(moveDirection.x); });
+
+            changeState ??= new(() =>
             {
-                moveDirection = runner.Input;
-                currentSpeed += acceleration * speed * Time.deltaTime;
-            }
-            else
-            {
-                currentSpeed -= deAcceleration * speed * Time.deltaTime;
-            }
-            currentSpeed = Mathf.Clamp(currentSpeed, 0, speed);
+                if (currentSpeed == 0)
+                {
+                    runner.SetState(typeof(IdleState));
+                }
+            });
+
+            exit ??= new(() => directionIndicator.gameObject.SetActive(false));
         }
 
-        public override void FixedUpdate()
+        protected override void PlayStateAnimation()
         {
-            var position = rigidBody.position;
-            var destination = position + currentSpeed * Time.fixedDeltaTime * moveDirection;
-
-            rigidBody.MovePosition(destination);
-            animation.AdjustSpriteRotation(moveDirection.x);
+            animation.WalkingHorizontalAnimation();
         }
 
-        public override void ChangeState()
+        public override Optional<Action> Exit()
         {
-            if (currentSpeed == 0)
-            {
-                runner.SetState(typeof(IdleState));
-            }
+            return exit;
+        }
+
+        public override Optional<Action> Update()
+        {
+            return update;
+        }
+
+        public override Optional<Action> FixedUpdate()
+        {
+            return fixedUpdate;
+        }
+
+        public override Optional<Action> ChangeState()
+        {
+            return changeState;
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using EnemyAI;
 using UnityEngine;
 
 namespace Attack

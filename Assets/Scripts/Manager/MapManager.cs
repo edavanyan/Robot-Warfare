@@ -3,7 +3,6 @@ using Cameras;
 using Grid;
 using UnityEngine;
 using Utils.Pool;
-using CharacterController = PlayerController.CharacterController;
 using Random = UnityEngine.Random;
 
 namespace Manager

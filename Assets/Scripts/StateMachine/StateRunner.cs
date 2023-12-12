@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PlayerController;
 using UnityEngine;
-using CharacterController = UnityEngine.CharacterController;
+using UnityEngine.InputSystem;
 
 namespace StateMachine
 {
@@ -12,41 +12,49 @@ namespace StateMachine
         [SerializeField]
         private List<PlayerState> states;
         protected PlayerState activeState;
-        private PlayerController.CharacterController character; 
-        public bool active = true;
+        private PlayerController.CharacterController character;
 
         protected virtual void Awake()
         {
+            GameInput.InputActions.Instance.Game.Movement.performed += CaptureInput;
+            GameInput.InputActions.Instance.Game.Movement.canceled += CaptureInput;
             character = GetComponent<PlayerController.CharacterController>();
             SetState(states[0].GetType());
         }
 
+        private void OnDestroy()
+        {
+            GameInput.InputActions.Instance.Game.Movement.performed -= CaptureInput;
+            GameInput.InputActions.Instance.Game.Movement.canceled -= CaptureInput;
+        }
+
         public void SetState(Type newStateType)
         {
-            if (active)
-            {
-                activeState?.Exit();
+            Invoke(activeState?.Exit());
 
-                activeState = states.First(s => s.GetType() == newStateType);
-                activeState.Init(character);
-            }
+            activeState = states.First(s => s.GetType() == newStateType);
+            activeState.Init(character);
         }
 
         private void Update()
         {
-            if (active)
-            {
-                activeState.Update();
-                activeState.ChangeState();
-            }
+            Invoke(activeState.Update());
+            Invoke(activeState.ChangeState());
         }
 
         private void FixedUpdate()
         {
-            if (active)
-            {
-                activeState.FixedUpdate();
-            }
+            Invoke(activeState.FixedUpdate());
+        }
+
+        private void CaptureInput(InputAction.CallbackContext context)
+        {
+            activeState.CaptureInput(context);
+        }
+
+        private void Invoke(Optional<Action> method)
+        {
+            method?.Get()?.Invoke();
         }
     }
 }

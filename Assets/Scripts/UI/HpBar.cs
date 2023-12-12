@@ -1,5 +1,3 @@
-using System;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,13 +13,6 @@ namespace UI
         [SerializeField] private RectMask2D hpMask;
         [SerializeField] private Image bar;
         [SerializeField] private RectTransform hpBar;
-
-        private bool isTweening;
-
-        private void Awake()
-        {
-            Debug.Log(hpBar.sizeDelta.x);
-        }
 
         public void Change(int amount)
         {

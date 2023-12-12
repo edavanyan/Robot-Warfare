@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Attack;
 using DG.Tweening;
 using EnemyAI;
 using Loots;
-using PlayerController;
 using TMPro;
 using UnityEngine;
 using Utils.Pool;
@@ -15,7 +12,7 @@ namespace Manager
 {
     public class EnemyManager : MonoBehaviour
     {
-        [SerializeField]private TextMeshProUGUI killedText;
+        [SerializeField] private TextMeshProUGUI killedText;
         [SerializeField] private FloatingNumber floatingNumberProto;
         
         public int limit;
@@ -101,18 +98,18 @@ namespace Manager
                 enemy.SubscribeOnHit(number =>
                 {
                     var floatingNumber = floatingNumberPool.NewItem();
-                    floatingNumber.transform.SetParent(API.UIManager.transform);
+                    floatingNumber.transform.SetParent(API.GameCanvas.transform);
                     floatingNumber.Number = number;
                     
                     var position = enemy.transform.position;
-                    floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
+                    floatingNumber.RectTransform.anchoredPosition = API.GameCanvas.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
                     DOTween.Sequence()
                         .Append(floatingNumber.RectTransform.DOScale(Vector3.one, 0.05f))
                         .Join(DOTween.To(() => position, pos => position = pos, new Vector3(0, 0.5f, 0), 0.4f).SetRelative(true))
                         .Append(floatingNumber.RectTransform.DOScale(Vector3.zero, 0.1f))
                         .OnUpdate(() =>
                         {
-                            floatingNumber.RectTransform.anchoredPosition = API.UIManager.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
+                            floatingNumber.RectTransform.anchoredPosition = API.GameCanvas.ScreenToCanvasPosition(Camera.main.WorldToScreenPoint(position));
                         })
                         .AppendCallback(() =>
                         {

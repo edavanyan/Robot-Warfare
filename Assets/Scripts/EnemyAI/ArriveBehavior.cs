@@ -1,5 +1,4 @@
-using System;
-using PlayerController;
+using Manager;
 using UnityEngine;
 
 namespace EnemyAI

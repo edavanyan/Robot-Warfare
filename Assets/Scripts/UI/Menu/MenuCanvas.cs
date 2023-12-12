@@ -1,6 +1,6 @@
 using DG.Tweening;
+using Manager;
 using MoreMountains.Feedbacks;
-using PlayerController;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace UI.Menu
 {
-    public class UIManager : MonoBehaviour
+    public class MenuCanvas : MonoBehaviour
     {
         [SerializeField] private CharacterSelection characterSelection;
         [SerializeField] private Button startButton;

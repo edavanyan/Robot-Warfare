@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace StateMachine
@@ -10,10 +11,11 @@ namespace StateMachine
         {
             runner = parent;
         }
+
         public abstract void CaptureInput(InputAction.CallbackContext context);
-        public abstract void Update();
-        public abstract void FixedUpdate();
-        public abstract void ChangeState();
-        public abstract void Exit();
+        public abstract Optional<Action> Update();
+        public abstract Optional<Action> FixedUpdate();
+        public abstract Optional<Action> ChangeState();
+        public abstract Optional<Action> Exit();
     }
 }

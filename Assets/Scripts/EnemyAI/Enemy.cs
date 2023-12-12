@@ -3,12 +3,11 @@ using Attack;
 using Cameras;
 using DG.Tweening;
 using Loots;
-using PlayerController;
+using Manager;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using Utils.Pool;
-using Sequence = DG.Tweening.Sequence;
 
 namespace EnemyAI
 {

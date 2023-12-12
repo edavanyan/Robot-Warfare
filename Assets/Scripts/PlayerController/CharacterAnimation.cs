@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using Manager;
+using UnityEngine;
 
 namespace PlayerController
 {
@@ -15,12 +17,13 @@ namespace PlayerController
 
         private int currentTrigger;
         private static readonly int IsDie = Animator.StringToHash("IsDie");
-
+        private readonly SpriteRenderer spriteRenderer;
 
         public CharacterAnimation(Animator animator, Transform transform)
         {
             this.animator = animator;
             this.transform = transform;
+            this.spriteRenderer = animator.GetComponent<SpriteRenderer>();
         }
         public void AdjustSpriteRotation(float xInput)
         {
@@ -75,7 +78,11 @@ namespace PlayerController
 
         public void HitAnimation()
         {
-            // animator.SetTrigger(IsHit);
+            spriteRenderer.DOComplete();
+            spriteRenderer.DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutSine).OnComplete(() =>
+            {
+                spriteRenderer.color = Color.white;
+            });
         }
 
         public void DieAnimation()
@@ -83,9 +90,20 @@ namespace PlayerController
             animator.SetTrigger(IsDie);
         }
 
-        public void PreviousAnimation()
+        public void LevelUpAnimation()
         {
-            animator.SetTrigger(currentTrigger);
+            API.VfxManager.LevelUpEffect();
+            spriteRenderer.DOComplete();
+            DOTween.Sequence()
+                .Append(spriteRenderer.DOColor(Color.cyan, 0.2f).SetLoops(6, LoopType.Yoyo)
+                    .SetEase(Ease.OutSine))
+                .Join(transform.DOScale(new Vector3(1.05f, 1.05f, 1), 0.2f).SetLoops(6, LoopType.Yoyo))
+                .OnComplete(() =>
+                {
+                    spriteRenderer.color = Color.white;
+                    transform.localScale = Vector3.one;
+                });
+            
         }
     }
 }

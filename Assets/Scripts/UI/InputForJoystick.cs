@@ -1,5 +1,3 @@
-using System;
-using DG.Tweening;
 using GameInput;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -48,7 +46,6 @@ namespace UI
                 color = innerColor;
                 inner.color = color;
                 mousePosition = touch.position;
-                gameObject.SetActive(true);
                 var viewportPosition = new Vector3(mousePosition.x / Screen.width,
                     mousePosition.y / Screen.height,
                     0);

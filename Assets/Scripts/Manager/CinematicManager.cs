@@ -1,9 +1,6 @@
-using System;
 using Cinemachine;
 using DG.Tweening;
-using EnemyAI;
 using Loots;
-using PlayerController;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -90,7 +87,6 @@ namespace Manager
             LensEffect(() =>
             {
                 // camera.Follow.gameObject.SetActive(false);
-                Verdan.active = false;
                 Luna.transform.position = camera.Follow.position;
                 camera.Follow = Luna.transform;
                 camera.Follow.gameObject.SetActive(true);
@@ -105,7 +101,6 @@ namespace Manager
             LensEffect(() =>
             {
                 // camera.Follow.gameObject.SetActive(false);
-                Luna.active = false;
                 Alden.transform.position = camera.Follow.position;
                 camera.Follow = Alden.transform;
                 camera.Follow.gameObject.SetActive(true);

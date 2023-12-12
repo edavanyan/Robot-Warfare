@@ -1,37 +1,49 @@
+using System;
 using StateMachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace PlayerController
 {
     [CreateAssetMenu(menuName = "States/Character/Idle")]
     public class IdleState : PlayerState
     {
+        private Optional<Action> changeState;
 
-        public override void PlayStateAnimation()
+        public override void Init(CharacterController parent)
         {
-            // animation.IdleAnimation();
-        }
-
-        public override Vector2 GetPlayerMoveDirection()
-        {
-            return Vector2.zero;
-        }
-
-        public override void Update()
-        {
-        }
-
-        public override void FixedUpdate()
-        {
-        }
-
-        public override void ChangeState()
-        {
-            if (runner.Input != Vector2.zero)
+            base.Init(parent);
+            changeState ??= new(() =>
             {
-                runner.SetState(typeof(WalkState));
-            }
+                if (runner.Input != Vector2.zero)
+                {
+                    runner.SetState(typeof(WalkState));
+                }
+            });
+        }
+
+        protected override void PlayStateAnimation()
+        {
+            animation.IdleAnimation();
+        }
+
+        public override Optional<Action> Update()
+        {
+            return Optional<Action>.Empty;
+        }
+
+        public override Optional<Action> FixedUpdate()
+        {
+            return Optional<Action>.Empty;
+        }
+
+        public override Optional<Action> Exit()
+        {
+            return Optional<Action>.Empty;
+        }
+
+        public override Optional<Action> ChangeState()
+        {
+            return changeState;
         }
     }
 }
